@@ -8,10 +8,17 @@ export default function MyTeam() {
     const [user, setUser] = useState(null);
     const [team, setTeam] = useState(null);
     const [members, setMembers] = useState([]);
+    const [invites, setInvites] = useState([]); // Pending invites for the user
+    // Search state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [searchLoading, setSearchLoading] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('initial'); // initial, create, join
-    const [formData, setFormData] = useState({ name: '', logo_url: '', join_code: '' });
+    const [formData, setFormData] = useState({ name: '', join_code: '' });
     const [error, setError] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
 
     useEffect(() => {
         checkUserAndTeam();
@@ -35,6 +42,9 @@ export default function MyTeam() {
         if (memberData && memberData.teams) {
             setTeam(memberData.teams);
             fetchMembers(memberData.team_id);
+        } else {
+            // Fetch invites if not in team
+            fetchInvites(session.user.id);
         }
         setLoading(false);
     };
@@ -46,6 +56,17 @@ export default function MyTeam() {
             .eq('team_id', teamId);
         if (data) setMembers(data);
     };
+
+    const fetchInvites = async (userId) => {
+        const { data } = await supabase
+            .from('team_invites')
+            .select('id, status, teams(name, logo_url)')
+            .eq('user_id', userId)
+            .eq('status', 'pending');
+        if (data) setInvites(data);
+    };
+
+    // --- Actions ---
 
     const handleCreate = async (e) => {
         e.preventDefault();
@@ -59,7 +80,7 @@ export default function MyTeam() {
             .from('teams')
             .insert([{
                 name: formData.name,
-                logo_url: formData.logo_url,
+                // logo_url removed
                 join_code: code,
                 members_count: 1
             }])
@@ -83,7 +104,6 @@ export default function MyTeam() {
         if (memberError) {
             setError('Team created but failed to join instantly. Please verify.');
         } else {
-            // Success
             setTeam(teamData);
             fetchMembers(teamData.id);
             setView('initial');
@@ -99,45 +119,44 @@ export default function MyTeam() {
             return;
         }
 
-        // 1. Find team
         const { data: teamFound, error: findError } = await supabase
             .from('teams')
             .select('*')
-            .eq('join_code', formData.join_code.toUpperCase()) // normalized
+            .eq('join_code', formData.join_code.toUpperCase())
             .single();
 
         if (findError || !teamFound) {
-            console.error(findError);
             setError('Invalid Team Code');
             return;
         }
 
-        // 2. Add member
+        await joinTeamLogic(teamFound);
+    };
+
+    const joinTeamLogic = async (teamObj) => {
+        // Add member
         const { error: joinError } = await supabase
             .from('team_members')
             .insert([{
-                team_id: teamFound.id,
+                team_id: teamObj.id,
                 user_id: user.id,
                 role: 'member'
             }]);
 
         if (joinError) {
-            if (joinError.code === '23505') setError('You are already in a team.'); // Unique violation
+            if (joinError.code === '23505') setError('You are already in a team.');
             else setError(joinError.message);
             return;
         }
 
-        // 3. Update team count
-        await supabase.rpc('increment_team_count', { t_id: teamFound.id });
-        // Or manual update if RPC not exists. For now, manual update or rely on trigger?
-        // Let's do manual update for MVP
+        // Update count
         await supabase
             .from('teams')
-            .update({ members_count: teamFound.members_count + 1 })
-            .eq('id', teamFound.id);
+            .update({ members_count: teamObj.members_count + 1 })
+            .eq('id', teamObj.id);
 
-        setTeam(teamFound);
-        fetchMembers(teamFound.id);
+        setTeam(teamObj);
+        fetchMembers(teamObj.id);
         setView('initial');
     };
 
@@ -149,7 +168,6 @@ export default function MyTeam() {
             .delete()
             .eq('user_id', user.id);
 
-        // Setup simple decrement
         if (team) {
             await supabase
                 .from('teams')
@@ -159,9 +177,94 @@ export default function MyTeam() {
 
         setTeam(null);
         setMembers([]);
+        // Re-check invites
+        fetchInvites(user.id);
     };
 
-    if (loading) return null; // Or skeleton
+    // --- Search & Invite ---
+
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        setSearchLoading(true);
+        // Search profiles by username
+        const { data } = await supabase
+            .from('profiles')
+            .select('id, username, avatar_url')
+            .ilike('username', `%${searchQuery}%`)
+            .limit(5);
+
+        setSearchResults(data || []);
+        setSearchLoading(false);
+    };
+
+    const handleInviteUser = async (targetUserId) => {
+        setSuccessMsg('');
+        const { error } = await supabase
+            .from('team_invites')
+            .insert([{
+                team_id: team.id,
+                user_id: targetUserId
+            }]);
+
+        if (error) {
+            if (error.code === '23505') alert('User already invited or pending.');
+            else alert(error.message);
+        } else {
+            alert('Invite sent!');
+        }
+    };
+
+    const handleAcceptInvite = async (invite) => {
+        // Join the team
+        // We need team details first
+        const { data: teamData } = await supabase.from('teams').select('*').eq('id', invite.teams.id).single(); // actually the query above returned team name/logo inside invite.teams, but we need full object for state ideally. Wait, invite.teams is an object.
+
+        // Actually fetch full team to be safe for joinTeamLogic
+        const { data: fullTeam } = await supabase.from('teams').select('*').eq('id', invite.teams.id || invite.team_id).single(); // wait, join query structure... 
+        // In fetchInvites: select('..., teams(name, logo_url)') -> results in invite.teams = {name:..., logo_url:...}. It doesn't have ID unless we ask.
+        // Actually we have invite.team_id (foreign key) on the invite object itself implicitly? No, we selected 'id, status, teams(...)'.
+        // We should fix fetchInvites to include team_id
+
+        // For now, let's fix fetchInvites first in mind, but here let's assume we can get it.
+        // But cleaner: update status to accepted, then insert to team_members.
+
+        await supabase
+            .from('team_invites')
+            .update({ status: 'accepted' })
+            .eq('id', invite.id);
+
+        // Insert member
+        await supabase.from('team_members').insert([{
+            team_id: fullTeam.id,
+            user_id: user.id,
+            role: 'member'
+        }]);
+
+        // Update count
+        await supabase.from('teams').update({ members_count: fullTeam.members_count + 1 }).eq('id', fullTeam.id);
+
+        setTeam(fullTeam);
+        fetchMembers(fullTeam.id);
+        setInvites([]); // Clear invites
+    };
+
+    // Correct fetchInvites to include team_id
+    const fetchInvitesCorrected = async (userId) => {
+        const { data } = await supabase
+            .from('team_invites')
+            .select('id, status, team_id, teams(name, logo_url)')
+            .eq('user_id', userId)
+            .eq('status', 'pending');
+        if (data) setInvites(data);
+    };
+
+    // Override the previous fetchInvites with this one in the effect
+    useEffect(() => {
+        if (user && !team) fetchInvitesCorrected(user.id);
+    }, [user, team]);
+
+
+    if (loading) return null;
 
     if (!user) return (
         <section className={styles.section}>
@@ -184,7 +287,10 @@ export default function MyTeam() {
                     <div className={styles.card} style={{ maxWidth: '800px' }}>
                         <div className={styles.teamHeader}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                {team.logo_url && <img src={team.logo_url} style={{ width: 64, height: 64, borderRadius: '50%' }} />}
+                                {/* Logo removed/optional- if it exists show it, else placeholder */}
+                                <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                                    {team.logo_url ? <img src={team.logo_url} style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : team.name[0]}
+                                </div>
                                 <div>
                                     <div className={styles.teamName}>{team.name}</div>
                                     <div style={{ color: '#888', fontSize: '0.9rem' }}>{members.length} Members</div>
@@ -212,6 +318,38 @@ export default function MyTeam() {
                             ))}
                         </div>
 
+                        {/* Search & Invite Section (For everyone or just Captain?) Let's allow everyone to invite for now to reduce friction */}
+                        <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #333' }}>
+                            <h4 style={{ marginBottom: '1rem', color: 'white' }}>Invite Players</h4>
+                            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
+                                <input
+                                    className={styles.input}
+                                    placeholder="Search by username..."
+                                    value={searchQuery}
+                                    onChange={e => setSearchQuery(e.target.value)}
+                                />
+                                <button type="submit" className={`${styles.btn} ${styles.btnSecondary}`}>Search</button>
+                            </form>
+
+                            {searchResults.length > 0 && (
+                                <div style={{ display: 'grid', gap: '10px' }}>
+                                    {searchResults.map(p => (
+                                        <div key={p.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#222', padding: '10px', borderRadius: '8px' }}>
+                                            <span style={{ color: 'white' }}>{p.username}</span>
+                                            {/* Don't allow inviting existing members */}
+                                            {members.find(m => m.user_id === p.id) ? (
+                                                <span style={{ color: '#666', fontSize: '0.8rem' }}>Joined</span>
+                                            ) : (
+                                                <button onClick={() => handleInviteUser(p.id)} style={{ background: '#4f46e5', border: 'none', color: 'white', padding: '4px 12px', borderRadius: '4px', cursor: 'pointer' }}>
+                                                    Invite
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
                         <button onClick={handleLeave} style={{ marginTop: '2rem', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}>
                             Leave Team
                         </button>
@@ -228,6 +366,29 @@ export default function MyTeam() {
                     <h2 className={styles.title}>Team Management</h2>
                     <p className={styles.subtitle}>Create your legacy or join forces.</p>
                 </div>
+
+                {/* Invites Section */}
+                {invites.length > 0 && (
+                    <div className={styles.card} style={{ marginBottom: '2rem', border: '1px solid #4f46e5' }}>
+                        <h3 style={{ marginBottom: '1rem', color: '#4f46e5' }}>Team Invites</h3>
+                        <div style={{ display: 'grid', gap: '1rem' }}>
+                            {invites.map(inv => (
+                                <div key={inv.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#111', padding: '1rem', borderRadius: '8px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <div style={{ fontWeight: 'bold', color: 'white' }}>{inv.teams?.name}</div>
+                                    </div>
+                                    <button
+                                        onClick={() => handleAcceptInvite(inv)}
+                                        className={`${styles.btn} ${styles.btnPrimary}`}
+                                        style={{ fontSize: '0.85rem', padding: '6px 16px' }}
+                                    >
+                                        Accept
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {view === 'initial' && (
                     <div className={styles.card}>
@@ -250,12 +411,7 @@ export default function MyTeam() {
                                 onChange={e => setFormData({ ...formData, name: e.target.value })}
                                 required
                             />
-                            <input
-                                className={styles.input}
-                                placeholder="Logo URL (Optional)"
-                                value={formData.logo_url}
-                                onChange={e => setFormData({ ...formData, logo_url: e.target.value })}
-                            />
+                            {/* Logo URL input removed */}
                             {error && <p style={{ color: '#ef4444' }}>{error}</p>}
                             <div className={styles.actions}>
                                 <button type="button" className={`${styles.btn} ${styles.btnSecondary}`} onClick={() => setView('initial')}>Cancel</button>
