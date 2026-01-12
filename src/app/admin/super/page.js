@@ -60,7 +60,14 @@ export default function SuperAdminPanel() {
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
                 <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Super Admin Panel</h1>
-                <span style={{ padding: '4px 12px', background: '#4f46e5', borderRadius: '100px', fontSize: '0.8rem' }}>SUPER ADMIN ACCESS ONLY</span>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                    <Link href="/admin">
+                        <button style={{ padding: '8px 16px', background: '#333', border: '1px solid #444', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>
+                            Go to Content Mgmt
+                        </button>
+                    </Link>
+                    <span style={{ padding: '8px 12px', background: '#4f46e5', borderRadius: '100px', fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>SUPER ADMIN ACCESS ONLY</span>
+                </div>
             </div>
 
             <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '16px', overflow: 'hidden' }}>

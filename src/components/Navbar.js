@@ -8,21 +8,36 @@ import styles from './Navbar.module.css';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
-    const [user, setUser] = useState(null);
-    const [showProfile, setShowProfile] = useState(false);
-    const pathname = usePathname();
+    const [userRole, setUserRole] = useState(null);
 
     useEffect(() => {
         if (!supabase) return;
 
+        const fetchRole = async (userId) => {
+            const { data } = await supabase.from('profiles').select('role').eq('id', userId).single();
+            if (data) setUserRole(data.role);
+        };
+
         // Check active session
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
+            if (session?.user) {
+                setUser(session.user);
+                fetchRole(session.user.id);
+            } else {
+                setUser(null);
+                setUserRole(null);
+            }
         });
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
+            if (session?.user) {
+                setUser(session.user);
+                fetchRole(session.user.id);
+            } else {
+                setUser(null);
+                setUserRole(null);
+            }
         });
 
         return () => subscription.unsubscribe();
@@ -36,6 +51,7 @@ export default function Navbar() {
             await supabase.auth.signOut();
             setShowProfile(false);
             setIsOpen(false);
+            setUserRole(null);
             // Optional: redirect to home or refresh
         }
     };
@@ -72,6 +88,14 @@ export default function Navbar() {
                     <Link href="/teams" className={styles.link}>Teams</Link>
                     <Link href="/creators" className={styles.link}>Creators</Link>
                     <Link href="/social" className={styles.link}>Social</Link>
+
+                    {/* Admin Links */}
+                    {userRole === 'super_admin' && (
+                        <Link href="/admin/super" className={styles.link} style={{ color: '#818cf8' }}>Super Admin</Link>
+                    )}
+                    {userRole === 'admin' && (
+                        <Link href="/admin" className={styles.link} style={{ color: '#34d399' }}>Admin</Link>
+                    )}
                 </div>
 
                 <div className={styles.actions}>
@@ -120,6 +144,14 @@ export default function Navbar() {
                     <Link href="/creators" className={styles.drawerLink} onClick={toggleMenu}>Creators</Link>
                     <Link href="/social" className={styles.drawerLink} onClick={toggleMenu}>Social</Link>
                     <hr className={styles.divider} />
+
+                    {/* Admin Links Mobile */}
+                    {userRole === 'super_admin' && (
+                        <Link href="/admin/super" className={styles.drawerLink} onClick={toggleMenu} style={{ color: '#818cf8' }}>Super Admin Panel</Link>
+                    )}
+                    {userRole === 'admin' && (
+                        <Link href="/admin" className={styles.drawerLink} onClick={toggleMenu} style={{ color: '#34d399' }}>Admin Panel</Link>
+                    )}
 
                     {user ? (
                         <button onClick={handleLogout} className={styles.drawerLink} style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>
