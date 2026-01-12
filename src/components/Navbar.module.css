@@ -92,6 +92,53 @@
     gap: 16px;
 }
 
+.loginBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.loginBtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #818cf8 0%, #a78bfa 50%, #c084fc 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+.loginBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(99, 102, 241, 0.5);
+}
+
+.loginBtn:hover::before {
+    opacity: 1;
+}
+
+.loginBtn span,
+.loginBtn {
+    position: relative;
+    z-index: 1;
+}
+
 .hamburger {
     display: none;
     flex-direction: column;

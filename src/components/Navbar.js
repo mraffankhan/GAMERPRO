@@ -126,9 +126,9 @@ export default function Navbar() {
                             )}
                         </div>
                     ) : (
-                        <button className={styles.loginBtn}>
-                            <Link href="/login">Login</Link>
-                        </button>
+                        <Link href="/login" className={styles.loginBtn}>
+                            Login
+                        </Link>
                     )}
 
                     {/* Hamburger Button */}
