@@ -45,17 +45,20 @@ export default function SuperAdminHub() {
                 <span style={{ padding: '8px 16px', background: '#4f46e5', borderRadius: '100px', fontSize: '0.9rem' }}>SUPER ACCESS</span>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '32px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', alignItems: 'stretch' }}>
                 {cards.map((card) => (
-                    <Link href={card.href} key={card.title} style={{ textDecoration: 'none' }}>
+                    <Link href={card.href} key={card.title} style={{ textDecoration: 'none', display: 'block' }}>
                         <div style={{
-                            background: 'rgba(255,255,255,0.05)',
+                            background: '#1a1a1a',
                             padding: '32px',
                             borderRadius: '16px',
-                            border: '1px solid rgba(255,255,255,0.1)',
+                            border: '1px solid #333',
                             transition: 'all 0.2s ease',
                             cursor: 'pointer',
-                            height: '100%'
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center'
                         }}>
                             <h2 style={{ fontSize: '1.8rem', marginBottom: '12px', color: card.color }}>{card.title}</h2>
                             <p style={{ color: '#aaa' }}>{card.desc}</p>

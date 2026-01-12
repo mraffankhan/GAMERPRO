@@ -29,14 +29,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@600,700&f[]=general-sans@500,600&display=swap" rel="stylesheet" />
+        <link 
+          rel="preload" 
+          href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@600,700&f[]=general-sans@500,600&display=swap" 
+          as="style" 
+        />
+        <link 
+          rel="stylesheet" 
+          href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@600,700&f[]=general-sans@500,600&display=swap" 
+        />
       </head>
       <body className={`${ibmPlex.variable} ${spaceGrotesk.variable}`}>
         <Navbar />
         {children}
         <Footer />
       </body>
-    </html>
+    </html >
   );
 }

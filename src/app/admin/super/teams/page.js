@@ -108,9 +108,11 @@ export default function TeamManager() {
 
             {/* List */}
             <h2 style={{ fontSize: '1.5rem', marginBottom: '24px', fontWeight: 'bold' }}>All Teams</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '24px' }}>
-                {teams.map(t => (
-                    <div key={t.id} style={{ background: '#1a1a1a', borderRadius: '16px', padding: '24px', border: '1px solid #333', textAlign: 'center', transition: 'transform 0.2s' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+                {teams.length === 0 ? (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', color: '#666', background: 'rgba(255,255,255,0.02)', borderRadius: '16px' }}>No teams added yet.</div>
+                ) : teams.map(t => (
+                    <div key={t.id} style={{ background: '#1a1a1a', borderRadius: '16px', padding: '24px', border: '1px solid #333', textAlign: 'center', transition: 'transform 0.2s', display: 'flex', flexDirection: 'column', height: '100%' }}>
                         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#222', margin: '0 auto 16px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #333' }}>
                             {t.logo_url ? (
                                 <img src={t.logo_url} alt={t.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -119,8 +121,8 @@ export default function TeamManager() {
                             )}
                         </div>
                         <h3 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '8px', color: '#fff' }}>{t.name}</h3>
-                        <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '20px' }}>{t.wins} Wins • {t.members_count} Members</p>
-                        <button onClick={() => handleDelete(t.id)} style={{ width: '100%', padding: '8px', background: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600' }}>Remove Team</button>
+                        <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '20px', flex: 1 }}>{t.wins} Wins • {t.members_count} Members</p>
+                        <button onClick={() => handleDelete(t.id)} style={{ width: '100%', padding: '8px', background: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600', marginTop: 'auto' }}>Remove Team</button>
                     </div>
                 ))}
             </div>
