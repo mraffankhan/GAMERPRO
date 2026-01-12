@@ -37,18 +37,38 @@ export default function UserManager() {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#fff' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
-                <Link href="/admin/super" style={{ color: '#aaa', textDecoration: 'none' }}>&larr; Back</Link>
-                <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>Manage Users</h1>
+            <div style={{ marginBottom: '32px' }}>
+                <Link href="/admin/super" style={{ textDecoration: 'none' }}>
+                    <button style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '10px 20px',
+                        background: '#333',
+                        color: '#fff',
+                        border: '1px solid #444',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem',
+                        transition: 'background 0.2s'
+                    }}>
+                        &larr; Back to Hub
+                    </button>
+                </Link>
             </div>
 
-            <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '16px', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Manage Users</h1>
+                <span style={{ color: '#818cf8', background: 'rgba(129, 140, 248, 0.1)', padding: '6px 16px', borderRadius: '100px', fontSize: '0.9rem' }}>{users.length} Total</span>
+            </div>
+
+            <div style={{ background: '#1a1a1a', borderRadius: '16px', overflow: 'hidden', border: '1px solid #333' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                    <thead style={{ background: 'rgba(255,255,255,0.1)' }}>
+                    <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                         <tr>
-                            <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>User</th>
-                            <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
-                            <th style={{ padding: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Actions</th>
+                            <th style={{ padding: '24px', borderBottom: '1px solid #333', fontSize: '0.9rem', color: '#888', fontWeight: '500' }}>USER DETAIL</th>
+                            <th style={{ padding: '24px', borderBottom: '1px solid #333', fontSize: '0.9rem', color: '#888', fontWeight: '500' }}>CURRENT ROLE</th>
+                            <th style={{ padding: '24px', borderBottom: '1px solid #333', fontSize: '0.9rem', color: '#888', fontWeight: '500' }}>CHANGE ROLE</th>
                         </tr>
                     </thead>
                     <tbody>
