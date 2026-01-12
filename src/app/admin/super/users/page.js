@@ -38,20 +38,34 @@ export default function UserManager() {
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#fff' }}>
             <div style={{ marginBottom: '32px' }}>
-                <Link href="/admin/super" style={{
-                    textDecoration: 'none',
-                    color: '#888',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    fontSize: '0.9rem',
-                    fontWeight: '500',
-                    transition: 'color 0.2s'
-                }}
-                    onMouseOver={(e) => e.target.style.color = '#fff'}
-                    onMouseOut={(e) => e.target.style.color = '#888'}
-                >
-                    &larr; Back
+                <Link href="/admin/super" style={{ textDecoration: 'none' }}>
+                    <div
+                        style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            padding: '12px 24px',
+                            background: 'rgba(10, 10, 10, 0.6)',
+                            backdropFilter: 'blur(12px)',
+                            border: '1px solid rgba(255, 255, 255, 0.08)',
+                            borderRadius: '100px',
+                            color: '#fff',
+                            fontSize: '0.9rem',
+                            fontWeight: '500',
+                            transition: 'all 0.2s ease',
+                            cursor: 'pointer'
+                        }}
+                        onMouseOver={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                        }}
+                        onMouseOut={(e) => {
+                            e.currentTarget.style.background = 'rgba(10, 10, 10, 0.6)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                    >
+                        &larr; Back
+                    </div>
                 </Link>
             </div>
 
