@@ -9,7 +9,7 @@ export default function TournamentManager() {
     const [tournaments, setTournaments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
-    const [formData, setFormData] = useState({ name: '', game: '', prize: '', start_date: '', image_url: '' });
+    const [formData, setFormData] = useState({ name: '', game: '', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
     const router = useRouter();
 
     useEffect(() => {
@@ -36,7 +36,7 @@ export default function TournamentManager() {
         if (error) setMessage(`Error: ${error.message}`);
         else {
             setMessage('Success!');
-            setFormData({ name: '', game: '', prize: '', start_date: '', image_url: '' });
+            setFormData({ name: '', game: '', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
             fetchTournaments();
         }
     };
@@ -116,6 +116,14 @@ export default function TournamentManager() {
                         <label style={labelStyle}>Cover Image URL</label>
                         <input type="text" placeholder="https://..." value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} style={inputStyle} />
                     </div>
+                    <div>
+                        <label style={labelStyle}>Max Teams</label>
+                        <input type="number" placeholder="16" value={formData.max_teams} onChange={e => setFormData({ ...formData, max_teams: parseInt(e.target.value) || 16 })} style={inputStyle} min="2" max="128" />
+                    </div>
+                    <div>
+                        <label style={labelStyle}>Total Stages</label>
+                        <input type="number" placeholder="5" value={formData.total_stages} onChange={e => setFormData({ ...formData, total_stages: parseInt(e.target.value) || 5 })} style={inputStyle} min="1" max="10" />
+                    </div>
                     <div style={{ gridColumn: '1 / -1', marginTop: '12px' }}>
                         <button type="submit" style={btnStyle}>Create Tournament</button>
                     </div>
@@ -135,9 +143,13 @@ export default function TournamentManager() {
                         )}
                         <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                             <h3 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '8px', color: '#fff' }}>{t.name}</h3>
-                            <div style={{ display: 'flex', gap: '12px', fontSize: '0.85rem', color: '#aaa', marginBottom: '20px', flex: 1 }}>
+                            <div style={{ display: 'flex', gap: '12px', fontSize: '0.85rem', color: '#aaa', marginBottom: '12px', flexWrap: 'wrap' }}>
                                 <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px', height: 'fit-content' }}>{t.game}</span>
                                 <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px', color: '#34d399', height: 'fit-content' }}>{t.prize}</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '12px', fontSize: '0.85rem', color: '#888', marginBottom: '20px', flex: 1 }}>
+                                <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px' }}>{t.max_teams || 16} Teams</span>
+                                <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px' }}>{t.total_stages || 5} Stages</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #333', paddingTop: '16px', marginTop: 'auto' }}>
                                 <span style={{ fontSize: '0.8rem', color: '#666' }}>{new Date(t.created_at).toLocaleDateString()}</span>
