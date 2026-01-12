@@ -183,19 +183,27 @@ export default function MyTeam() {
 
     // --- Search & Invite ---
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        setSearchLoading(true);
-        // Search profiles by username
-        const { data } = await supabase
-            .from('profiles')
-            .select('id, username, avatar_url')
-            .ilike('username', `%${searchQuery}%`)
-            .limit(5);
+    // Debounced search effect
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (searchQuery.trim().length === 0) {
+                setSearchResults([]);
+                return;
+            }
 
-        setSearchResults(data || []);
-        setSearchLoading(false);
-    };
+            setSearchLoading(true);
+            const { data } = await supabase
+                .from('profiles')
+                .select('id, username, avatar_url')
+                .ilike('username', `%${searchQuery}%`)
+                .limit(5);
+
+            setSearchResults(data || []);
+            setSearchLoading(false);
+        }, 300); // 300ms debounce
+
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     const handleInviteUser = async (targetUserId) => {
         setSuccessMsg('');
@@ -318,18 +326,18 @@ export default function MyTeam() {
                             ))}
                         </div>
 
-                        {/* Search & Invite Section (For everyone or just Captain?) Let's allow everyone to invite for now to reduce friction */}
+                        {/* Search & Invite Section */}
                         <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid #333' }}>
                             <h4 style={{ marginBottom: '1rem', color: 'white' }}>Invite Players</h4>
-                            <form onSubmit={handleSearch} style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
+                            <div style={{ marginBottom: '1rem' }}>
                                 <input
                                     className={styles.input}
-                                    placeholder="Search by username..."
+                                    placeholder="Type to search users..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
                                 />
-                                <button type="submit" className={`${styles.btn} ${styles.btnSecondary}`}>Search</button>
-                            </form>
+                                {searchLoading && <div style={{ color: '#888', fontSize: '0.8rem', marginTop: '4px' }}>Searching...</div>}
+                            </div>
 
                             {searchResults.length > 0 && (
                                 <div style={{ display: 'grid', gap: '10px' }}>
