@@ -1,4 +1,5 @@
 import Teams from "@/components/Teams";
+import MyTeam from "@/components/MyTeam";
 import styles from "./page.module.css";
 
 export const metadata = {
@@ -9,6 +10,7 @@ export const metadata = {
 export default function TeamsPage() {
     return (
         <main className={styles.main}>
+            <MyTeam />
             <Teams />
         </main>
     );
