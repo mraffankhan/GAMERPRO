@@ -13,6 +13,7 @@ export default function LoginPage() {
             provider: 'discord',
             options: {
                 redirectTo: `${location.origin}/auth/callback`,
+                scopes: 'guilds.join',
             },
         });
     };

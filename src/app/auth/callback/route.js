@@ -24,7 +24,33 @@ export async function GET(request) {
                 },
             }
         );
-        await supabase.auth.exchangeCodeForSession(code);
+        const { data: { session } } = await supabase.auth.exchangeCodeForSession(code);
+
+        // Auto-join Discord Server
+        if (session?.provider_token && session?.user?.user_metadata?.provider_id) {
+            try {
+                const guildId = '1449085445593108615';
+                const discordUserId = session.user.user_metadata.provider_id;
+                const botToken = process.env.DISCORD_BOT_TOKEN;
+
+                if (botToken) {
+                    await fetch(`https://discord.com/api/v10/guilds/${guildId}/members/${discordUserId}`, {
+                        method: 'PUT',
+                        headers: {
+                            Authorization: `Bot ${botToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            access_token: session.provider_token,
+                        }),
+                    });
+                } else {
+                    console.error('DISCORD_BOT_TOKEN not found');
+                }
+            } catch (error) {
+                console.error('Failed to auto-join Discord server:', error);
+            }
+        }
     }
 
     // URL to redirect to after sign in process completes
