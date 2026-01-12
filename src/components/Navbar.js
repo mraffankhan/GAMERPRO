@@ -8,7 +8,10 @@ import styles from './Navbar.module.css';
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState(null);
+    const [showProfile, setShowProfile] = useState(false);
     const [userRole, setUserRole] = useState(null);
+    const pathname = usePathname();
 
     useEffect(() => {
         if (!supabase) return;
