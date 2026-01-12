@@ -1,0 +1,117 @@
+.section {
+    padding: 100px 0;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.viewAll {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.viewAll:hover {
+    color: #fff;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.imagePlaceholder {
+    height: 180px;
+    background: linear-gradient(45deg, #1a1a1a, #252525);
+    position: relative;
+}
+
+/* Optional mock overlay */
+.imagePlaceholder::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.content {
+    padding: 24px;
+}
+
+.game {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 8px;
+}
+
+.name {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #fff;
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+.metaItem {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.value {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    font-family: var(--font-numbers);
+}
+
+@media (max-width: 600px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .title {
+        font-size: 2rem;
+    }
+}

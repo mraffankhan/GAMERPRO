@@ -1,0 +1,313 @@
+.navbar {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    right: 24px;
+    height: 72px;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 100px;
+    /* Fully rounded capsule */
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.desktopLogo {
+    font-family: 'Clash Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #fff 20%, #888 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    transition: transform 0.3s ease;
+    display: block;
+}
+
+.mobileLogo {
+    display: none;
+    /* Hidden by default on desktop */
+    font-family: 'Clash Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    color: #fff;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #fff 20%, #888 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.logo:hover .desktopLogo,
+.logo:hover .mobileLogo {
+    transform: scale(1.02);
+}
+
+.links {
+    display: flex;
+    gap: 32px;
+}
+
+.link {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+.link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+    padding: 0;
+}
+
+.bar {
+    width: 100%;
+    height: 2px;
+    background: #fff;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.bar.open:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.bar.open:nth-child(2) {
+    opacity: 0;
+}
+
+.bar.open:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+.drawer {
+    position: fixed;
+    top: 106px;
+    /* Below floating navbar */
+    left: 16px;
+    right: 16px;
+    width: auto;
+    border-radius: 24px;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Tighter gap for list feel */
+    transform: translateY(-150%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99;
+}
+
+.drawerOpen {
+    transform: translateY(0);
+}
+
+.drawerLink {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 16px 20px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    display: block;
+    /* Ensure full width clickability */
+}
+
+.drawerLink:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    transform: translateX(4px);
+}
+
+.divider {
+    border: 0;
+    margin: 8px 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+    .links {
+        display: none;
+    }
+
+    .loginBtn {
+        display: none;
+        /* Hide desktop login button on mobile */
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .desktopLogo {
+        display: none;
+    }
+
+    .mobileLogo {
+        display: block;
+    }
+
+    .navbar {
+        padding: 0 20px;
+        height: 64px;
+        /* Tight, app-like height */
+        top: 16px;
+        left: 16px;
+        right: 16px;
+        border-radius: 20px;
+        width: auto;
+        margin: 0;
+        background: rgba(10, 10, 10, 0.85);
+        /* Slightly more opaque for better text contrast */
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        /* Deeper shadow for pop */
+    }
+
+    .drawer {
+        top: 96px;
+        /* Adjusted to match new height + margin */
+        padding: 24px 20px;
+        background: rgba(5, 5, 5, 0.98);
+        /* Almost solid for readability */
+    }
+
+    .profileSection {
+        display: none;
+    }
+}
+
+.profileSection {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    cursor: pointer;
+}
+
+.username {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.profileIcon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.profileSection:hover .profileIcon {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.dropdown {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 6px;
+    min-width: 160px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.1s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.dropdownItem {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    text-align: left;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    font-family: inherit;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dropdownItem:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    transform: translateX(2px);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

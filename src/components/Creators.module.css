@@ -1,0 +1,82 @@
+.section {
+    padding: 100px 0;
+}
+
+.header {
+    margin-bottom: 60px;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 300px;
+    background: #111;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+}
+
+.avatar {
+    height: 200px;
+    background: linear-gradient(135deg, #333 0%, #1a1a1a 100%);
+}
+
+.info {
+    padding: 24px;
+}
+
+.name {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.role {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 16px;
+    font-family: var(--font-subheading);
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.followers {
+    font-weight: 700;
+    font-size: 1.2rem;
+    font-family: var(--font-numbers);
+}
+
+.platform {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
