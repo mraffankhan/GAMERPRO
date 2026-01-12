@@ -13,6 +13,7 @@ export default function MyTeam() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [searchLoading, setSearchLoading] = useState(false);
+    const [sentInvites, setSentInvites] = useState([]); // Track user IDs we've invited
 
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('initial'); // initial, create, join
@@ -218,35 +219,38 @@ export default function MyTeam() {
             if (error.code === '23505') alert('User already invited or pending.');
             else alert(error.message);
         } else {
-            alert('Invite sent!');
+            // Add to sentInvites to show Sent badge
+            setSentInvites(prev => [...prev, targetUserId]);
         }
     };
 
     const handleAcceptInvite = async (invite) => {
-        // Join the team
-        // We need team details first
-        const { data: teamData } = await supabase.from('teams').select('*').eq('id', invite.teams.id).single(); // actually the query above returned team name/logo inside invite.teams, but we need full object for state ideally. Wait, invite.teams is an object.
+        // Fetch full team details using team_id from invite
+        const { data: fullTeam } = await supabase.from('teams').select('*').eq('id', invite.team_id).single();
 
-        // Actually fetch full team to be safe for joinTeamLogic
-        const { data: fullTeam } = await supabase.from('teams').select('*').eq('id', invite.teams.id || invite.team_id).single(); // wait, join query structure... 
-        // In fetchInvites: select('..., teams(name, logo_url)') -> results in invite.teams = {name:..., logo_url:...}. It doesn't have ID unless we ask.
-        // Actually we have invite.team_id (foreign key) on the invite object itself implicitly? No, we selected 'id, status, teams(...)'.
-        // We should fix fetchInvites to include team_id
+        if (!fullTeam) {
+            alert('Error: Could not find team');
+            return;
+        }
 
-        // For now, let's fix fetchInvites first in mind, but here let's assume we can get it.
-        // But cleaner: update status to accepted, then insert to team_members.
-
+        // Update invite status
         await supabase
             .from('team_invites')
             .update({ status: 'accepted' })
             .eq('id', invite.id);
 
-        // Insert member
-        await supabase.from('team_members').insert([{
+        // Insert as team member
+        const { error: joinError } = await supabase.from('team_members').insert([{
             team_id: fullTeam.id,
             user_id: user.id,
             role: 'member'
         }]);
+
+        if (joinError) {
+            if (joinError.code === '23505') alert('You are already in a team.');
+            else alert(joinError.message);
+            return;
+        }
 
         // Update count
         await supabase.from('teams').update({ members_count: fullTeam.members_count + 1 }).eq('id', fullTeam.id);
@@ -347,6 +351,8 @@ export default function MyTeam() {
                                             {/* Don't allow inviting existing members */}
                                             {members.find(m => m.user_id === p.id) ? (
                                                 <span style={{ color: '#666', fontSize: '0.8rem' }}>Joined</span>
+                                            ) : sentInvites.includes(p.id) ? (
+                                                <span style={{ color: '#34d399', fontSize: '0.8rem' }}>Sent</span>
                                             ) : (
                                                 <button onClick={() => handleInviteUser(p.id)} style={{ background: '#4f46e5', border: 'none', color: 'white', padding: '4px 12px', borderRadius: '4px', cursor: 'pointer' }}>
                                                     Invite
