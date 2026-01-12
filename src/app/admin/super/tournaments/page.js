@@ -9,7 +9,7 @@ export default function TournamentManager() {
     const [tournaments, setTournaments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
-    const [formData, setFormData] = useState({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
+    const [formData, setFormData] = useState({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 12, total_stages: 5 });
     const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: '' });
     const router = useRouter();
 
@@ -44,7 +44,7 @@ export default function TournamentManager() {
         if (error) setMessage(`Error: ${error.message}`);
         else {
             setMessage('Success!');
-            setFormData({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
+            setFormData({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 12, total_stages: 5 });
             fetchTournaments();
         }
     };
@@ -206,11 +206,21 @@ export default function TournamentManager() {
                     </div>
                     <div>
                         <label style={labelStyle}>Max Teams</label>
-                        <input type="number" placeholder="16" value={formData.max_teams} onChange={e => setFormData({ ...formData, max_teams: parseInt(e.target.value) || 16 })} style={inputStyle} min="2" max="128" />
+                        <select
+                            value={formData.max_teams}
+                            onChange={e => setFormData({ ...formData, max_teams: parseInt(e.target.value) })}
+                            style={{ ...inputStyle, cursor: 'pointer' }}
+                        >
+                            {[12, 24, 36, 48, 60, 72, 84, 96, 108, 120, 132, 144, 156, 168, 180].map(n => (
+                                <option key={n} value={n}>{n} Teams</option>
+                            ))}
+                        </select>
                     </div>
                     <div>
-                        <label style={labelStyle}>Total Stages</label>
-                        <input type="number" placeholder="5" value={formData.total_stages} onChange={e => setFormData({ ...formData, total_stages: parseInt(e.target.value) || 5 })} style={inputStyle} min="1" max="10" />
+                        <label style={labelStyle}>Tournament Format</label>
+                        <div style={{ padding: '12px', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#888', fontSize: '0.9rem' }}>
+                            5 Stages: Qualifiers → Quarter → Semi → Final → Grand Final
+                        </div>
                     </div>
                     <div style={{ gridColumn: '1 / -1', marginTop: '12px' }}>
                         <button type="submit" style={btnStyle}>Create Tournament</button>
