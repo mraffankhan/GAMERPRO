@@ -222,8 +222,16 @@
         /* Almost solid for readability */
     }
 
-    .profileSection {
+    /* .profileSection is visible on mobile by default now (no display:none) */
+
+    .username {
         display: none;
+    }
+
+    .dropdown {
+        right: -10px;
+        /* Adjust dropdown position for mobile */
+        min-width: 140px;
     }
 }
 

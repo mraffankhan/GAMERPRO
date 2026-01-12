@@ -28,7 +28,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link href="https://api.fontshare.com/v2/css?f[]=clash-grotesk@600,700&f[]=general-sans@500,600&display=swap" rel="stylesheet" />
       </head>
