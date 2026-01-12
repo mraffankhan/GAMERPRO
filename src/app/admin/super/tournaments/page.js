@@ -111,22 +111,23 @@ export default function TournamentManager() {
             </div>
 
             {/* List */}
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '24px', fontWeight: 'bold' }}>All Tournaments</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {tournaments.map(t => (
-                    <div key={t.id} style={{ background: '#1a1a1a', borderRadius: '16px', overflow: 'hidden', border: '1px solid #333', transition: 'transform 0.2s' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+                {tournaments.length === 0 ? (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '48px', color: '#666', background: 'rgba(255,255,255,0.02)', borderRadius: '16px' }}>No tournaments found. Create one above!</div>
+                ) : tournaments.map(t => (
+                    <div key={t.id} style={{ background: '#1a1a1a', borderRadius: '16px', overflow: 'hidden', border: '1px solid #333', transition: 'transform 0.2s', display: 'flex', flexDirection: 'column' }}>
                         {t.image_url ? (
                             <img src={t.image_url} alt={t.name} style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
                         ) : (
                             <div style={{ width: '100%', height: '180px', background: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#444' }}>No Image</div>
                         )}
-                        <div style={{ padding: '20px' }}>
+                        <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                             <h3 style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '8px', color: '#fff' }}>{t.name}</h3>
-                            <div style={{ display: 'flex', gap: '12px', fontSize: '0.85rem', color: '#aaa', marginBottom: '20px' }}>
-                                <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px' }}>{t.game}</span>
-                                <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px', color: '#34d399' }}>{t.prize}</span>
+                            <div style={{ display: 'flex', gap: '12px', fontSize: '0.85rem', color: '#aaa', marginBottom: '20px', flex: 1 }}>
+                                <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px', height: 'fit-content' }}>{t.game}</span>
+                                <span style={{ background: '#222', padding: '4px 8px', borderRadius: '4px', color: '#34d399', height: 'fit-content' }}>{t.prize}</span>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #333', paddingTop: '16px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #333', paddingTop: '16px', marginTop: 'auto' }}>
                                 <span style={{ fontSize: '0.8rem', color: '#666' }}>{new Date(t.created_at).toLocaleDateString()}</span>
                                 <button onClick={() => handleDelete(t.id)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600' }}>Delete</button>
                             </div>
