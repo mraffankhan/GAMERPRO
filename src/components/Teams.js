@@ -1,13 +1,23 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase-auth';
 import styles from './Teams.module.css';
 
-const teams = [
-    { id: 1, name: "Liquid Pulse", wins: 42, members: 5 },
-    { id: 2, name: "Blackout Gaming", wins: 38, members: 6 },
-    { id: 3, name: "Void Runners", wins: 31, members: 4 },
-    { id: 4, name: "Echo Protocol", wins: 29, members: 5 },
-];
-
 export default function Teams() {
+    const [teams, setTeams] = useState([]);
+
+    useEffect(() => {
+        const fetchTeams = async () => {
+            const { data } = await supabase
+                .from('teams')
+                .select('*')
+                .order('wins', { ascending: false });
+            if (data) setTeams(data);
+        };
+        fetchTeams();
+    }, []);
+
     return (
         <section id="teams" className={styles.section}>
             <div className={`container ${styles.container}`}>
@@ -17,25 +27,29 @@ export default function Teams() {
                 </div>
 
                 <div className={styles.grid}>
-                    {teams.map((team) => (
-                        <div key={team.id} className={styles.card}>
-                            <div className={styles.logo}>
-                                {team.name[0]}
-                            </div>
-                            <h3 className={styles.name}>{team.name}</h3>
-                            <div className={styles.stats}>
-                                <div className={styles.stat}>
-                                    <span>Wins</span>
-                                    <strong>{team.wins}</strong>
+                    {teams.length === 0 ? (
+                        <p style={{ color: '#888' }}>Loading teams...</p>
+                    ) : (
+                        teams.map((team) => (
+                            <div key={team.id} className={styles.card}>
+                                <div className={styles.logo}>
+                                    {team.logo_url ? <img src={team.logo_url} alt={team.name} style={{ width: '100%', height: '100%', borderRadius: '50%' }} /> : team.name[0]}
                                 </div>
-                                <div className={styles.separator}></div>
-                                <div className={styles.stat}>
-                                    <span>Members</span>
-                                    <strong>{team.members}</strong>
+                                <h3 className={styles.name}>{team.name}</h3>
+                                <div className={styles.stats}>
+                                    <div className={styles.stat}>
+                                        <span>Wins</span>
+                                        <strong>{team.wins}</strong>
+                                    </div>
+                                    <div className={styles.separator}></div>
+                                    <div className={styles.stat}>
+                                        <span>Members</span>
+                                        <strong>{team.members_count}</strong>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
         </section>

@@ -1,12 +1,22 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase-auth';
 import styles from './Creators.module.css';
 
-const creators = [
-    { id: 1, name: "Sarah 'Viper' Chen", role: "Variety Streamer", followers: "2.4M", platform: "Twitch" },
-    { id: 2, name: "Alex 'Glitch' Novak", role: "Pro Analyst", followers: "850K", platform: "YouTube" },
-    { id: 3, name: "Marcus 'Tank' Rivera", role: "Co-Streamer", followers: "1.2M", platform: "Kick" },
-];
-
 export default function Creators() {
+    const [creators, setCreators] = useState([]);
+
+    useEffect(() => {
+        const fetchCreators = async () => {
+            const { data } = await supabase
+                .from('creators')
+                .select('*');
+            if (data) setCreators(data);
+        };
+        fetchCreators();
+    }, []);
+
     return (
         <section id="creators" className={styles.section}>
             <div className={`container ${styles.container}`}>
@@ -16,19 +26,26 @@ export default function Creators() {
                 </div>
 
                 <div className={styles.cards}>
-                    {creators.map((c) => (
-                        <div key={c.id} className={styles.card}>
-                            <div className={styles.avatar}></div>
-                            <div className={styles.info}>
-                                <h3 className={styles.name}>{c.name}</h3>
-                                <span className={styles.role}>{c.role}</span>
-                                <div className={styles.stats}>
-                                    <span className={styles.followers}>{c.followers}</span>
-                                    <span className={styles.platform}>{c.platform}</span>
+                    {creators.length === 0 ? (
+                        <p style={{ color: '#888' }}>Loading creators...</p>
+                    ) : (
+                        creators.map((c) => (
+                            <div key={c.id} className={styles.card}>
+                                <div className={styles.avatar}>
+                                    {c.avatar_url && <img src={c.avatar_url} alt={c.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />}
+                                </div>
+                                <div className={styles.info}>
+                                    <h3 className={styles.name}>{c.name}</h3>
+                                    {/* Assuming database might not have role yet, or it's optional */}
+                                    {c.role && <span className={styles.role}>{c.role}</span>}
+                                    <div className={styles.stats}>
+                                        <span className={styles.followers}>{c.followers}</span>
+                                        <span className={styles.platform}>{c.platform}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))
+                    )}
                 </div>
             </div>
         </section>
