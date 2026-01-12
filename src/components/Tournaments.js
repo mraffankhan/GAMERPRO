@@ -77,7 +77,7 @@ export default function Tournaments() {
             <div className={`container ${styles.container}`}>
                 <div className={styles.header}>
                     <h2 className={styles.title}>Featured Tournaments</h2>
-                    <a href="#" className={styles.viewAll}>View All &rarr;</a>
+                    <a href="/tournaments" className={styles.viewAll}>View All &rarr;</a>
                 </div>
 
                 <div className={styles.grid}>
@@ -98,6 +98,16 @@ export default function Tournaments() {
                                         <div className={styles.metaItem}>
                                             <span className={styles.label}>Starts</span>
                                             <span className={styles.value}>{t.start_date}</span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.meta} style={{ marginTop: '12px' }}>
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.label}>Teams</span>
+                                            <span className={styles.value}>{t.max_teams || 16} Teams</span>
+                                        </div>
+                                        <div className={styles.metaItem}>
+                                            <span className={styles.label}>Format</span>
+                                            <span className={styles.value}>{t.total_stages || 5} Stages</span>
                                         </div>
                                     </div>
                                     <button

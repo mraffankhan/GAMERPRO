@@ -21,7 +21,6 @@ export default function Hero() {
 
                 <div className={styles.actions}>
                     <a href="/tournaments" className="btn-primary">Explore Tournaments</a>
-                    <button className="btn-secondary">Host a Tournament</button>
                 </div>
             </div>
         </section>

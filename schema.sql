@@ -53,6 +53,9 @@ create table public.tournaments (
   prize text not null,
   start_date text not null,
   image_url text,
+  max_teams integer default 16,
+  total_stages integer default 5,
+  stages text[] default ARRAY['Qualifiers', 'Quarter Finals', 'Semi Finals', 'Finals', 'Grand Finals'],
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
