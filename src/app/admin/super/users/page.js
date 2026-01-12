@@ -38,22 +38,20 @@ export default function UserManager() {
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#fff' }}>
             <div style={{ marginBottom: '32px' }}>
-                <Link href="/admin/super" style={{ textDecoration: 'none' }}>
-                    <button style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '10px 20px',
-                        background: '#333',
-                        color: '#fff',
-                        border: '1px solid #444',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem',
-                        transition: 'background 0.2s'
-                    }}>
-                        &larr; Back to Hub
-                    </button>
+                <Link href="/admin/super" style={{
+                    textDecoration: 'none',
+                    color: '#888',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '0.9rem',
+                    fontWeight: '500',
+                    transition: 'color 0.2s'
+                }}
+                    onMouseOver={(e) => e.target.style.color = '#fff'}
+                    onMouseOut={(e) => e.target.style.color = '#888'}
+                >
+                    &larr; Back
                 </Link>
             </div>
 
