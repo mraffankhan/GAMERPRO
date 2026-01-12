@@ -64,7 +64,7 @@ export default function UserManager() {
                             e.currentTarget.style.transform = 'translateY(0)';
                         }}
                     >
-                        &larr; Back
+                        Back
                     </div>
                 </Link>
             </div>
