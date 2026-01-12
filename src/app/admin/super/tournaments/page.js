@@ -9,7 +9,8 @@ export default function TournamentManager() {
     const [tournaments, setTournaments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
-    const [formData, setFormData] = useState({ name: '', game: '', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
+    const [formData, setFormData] = useState({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
+    const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: '' });
     const router = useRouter();
 
     useEffect(() => {
@@ -32,18 +33,30 @@ export default function TournamentManager() {
     const handleCreate = async (e) => {
         e.preventDefault();
         setMessage('Creating...');
-        const { error } = await supabase.from('tournaments').insert([formData]);
+
+        // Format date for display
+        const formattedData = {
+            ...formData,
+            start_date: formData.start_date ? new Date(formData.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+        };
+
+        const { error } = await supabase.from('tournaments').insert([formattedData]);
         if (error) setMessage(`Error: ${error.message}`);
         else {
             setMessage('Success!');
-            setFormData({ name: '', game: '', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
+            setFormData({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 16, total_stages: 5 });
             fetchTournaments();
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('Are you sure?')) return;
-        await supabase.from('tournaments').delete().eq('id', id);
+    const confirmDelete = (id, name) => {
+        setDeleteModal({ show: true, id, name });
+    };
+
+    const handleDelete = async () => {
+        if (!deleteModal.id) return;
+        await supabase.from('tournaments').delete().eq('id', deleteModal.id);
+        setDeleteModal({ show: false, id: null, name: '' });
         fetchTournaments();
     };
 
@@ -51,6 +64,71 @@ export default function TournamentManager() {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#fff' }}>
+            {/* Delete Confirmation Modal */}
+            {deleteModal.show && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.8)',
+                    backdropFilter: 'blur(8px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        background: '#1a1a1a',
+                        border: '1px solid #333',
+                        borderRadius: '16px',
+                        padding: '32px',
+                        maxWidth: '400px',
+                        width: '90%',
+                        textAlign: 'center'
+                    }}>
+                        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚠️</div>
+                        <h3 style={{ fontSize: '1.3rem', marginBottom: '12px', color: '#fff' }}>Delete Tournament</h3>
+                        <p style={{ color: '#888', marginBottom: '24px', lineHeight: '1.5' }}>
+                            Are you sure you want to delete <strong style={{ color: '#fff' }}>{deleteModal.name}</strong>? This action cannot be undone.
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                            <button
+                                onClick={() => setDeleteModal({ show: false, id: null, name: '' })}
+                                style={{
+                                    padding: '12px 24px',
+                                    background: 'transparent',
+                                    border: '1px solid #444',
+                                    borderRadius: '8px',
+                                    color: '#fff',
+                                    cursor: 'pointer',
+                                    fontWeight: '600',
+                                    fontSize: '0.95rem'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                style={{
+                                    padding: '12px 24px',
+                                    background: '#ef4444',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    color: '#fff',
+                                    cursor: 'pointer',
+                                    fontWeight: '600',
+                                    fontSize: '0.95rem'
+                                }}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div style={{ marginBottom: '32px' }}>
                 <Link href="/admin/super" style={{ textDecoration: 'none' }}>
                     <div
@@ -102,15 +180,25 @@ export default function TournamentManager() {
                     </div>
                     <div>
                         <label style={labelStyle}>Game Title</label>
-                        <input type="text" placeholder="e.g. Valorant" value={formData.game} onChange={e => setFormData({ ...formData, game: e.target.value })} style={inputStyle} required />
+                        <input type="text" placeholder="e.g. FREE FIRE MAX" value={formData.game} onChange={e => setFormData({ ...formData, game: e.target.value })} style={inputStyle} required />
                     </div>
                     <div>
                         <label style={labelStyle}>Prize Pool</label>
-                        <input type="text" placeholder="e.g. $10,000" value={formData.prize} onChange={e => setFormData({ ...formData, prize: e.target.value })} style={inputStyle} required />
+                        <input type="text" placeholder="e.g. ₹10,000" value={formData.prize} onChange={e => setFormData({ ...formData, prize: e.target.value })} style={inputStyle} required />
                     </div>
                     <div>
                         <label style={labelStyle}>Start Date</label>
-                        <input type="text" placeholder="e.g. Feb 20, 2026" value={formData.start_date} onChange={e => setFormData({ ...formData, start_date: e.target.value })} style={inputStyle} required />
+                        <input
+                            type="date"
+                            value={formData.start_date}
+                            onChange={e => setFormData({ ...formData, start_date: e.target.value })}
+                            style={{
+                                ...inputStyle,
+                                colorScheme: 'dark',
+                                cursor: 'pointer'
+                            }}
+                            required
+                        />
                     </div>
                     <div>
                         <label style={labelStyle}>Cover Image URL</label>
@@ -153,7 +241,7 @@ export default function TournamentManager() {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #333', paddingTop: '16px', marginTop: 'auto' }}>
                                 <span style={{ fontSize: '0.8rem', color: '#666' }}>{new Date(t.created_at).toLocaleDateString()}</span>
-                                <button onClick={() => handleDelete(t.id)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600' }}>Delete</button>
+                                <button onClick={() => confirmDelete(t.id, t.name)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600' }}>Delete</button>
                             </div>
                         </div>
                     </div>

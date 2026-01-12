@@ -19,10 +19,11 @@ export default function MyTeam() {
     const [sentInvites, setSentInvites] = useState([]); // Track user IDs we've invited
 
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('initial'); // initial, create, join
-    const [formData, setFormData] = useState({ name: '', join_code: '' });
+    const [view, setView] = useState('initial'); // initial, create
+    const [formData, setFormData] = useState({ name: '' });
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
+    const [leaveModal, setLeaveModal] = useState(false);
 
     useEffect(() => {
         checkUserAndTeam();
@@ -118,8 +119,6 @@ export default function MyTeam() {
 
 
     const handleLeave = async () => {
-        if (!confirm('Are you sure you want to leave the team?')) return;
-
         await supabase
             .from('team_members')
             .delete()
@@ -134,6 +133,7 @@ export default function MyTeam() {
 
         setTeam(null);
         setMembers([]);
+        setLeaveModal(false);
         // Re-check invites
         fetchInvites(user.id);
     };
@@ -255,6 +255,70 @@ export default function MyTeam() {
     if (team) {
         return (
             <section className={styles.section}>
+                {/* Leave Team Modal */}
+                {leaveModal && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0, 0, 0, 0.8)',
+                        backdropFilter: 'blur(8px)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 1000
+                    }}>
+                        <div style={{
+                            background: '#1a1a1a',
+                            border: '1px solid #333',
+                            borderRadius: '16px',
+                            padding: '32px',
+                            maxWidth: '400px',
+                            width: '90%',
+                            textAlign: 'center'
+                        }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚠️</div>
+                            <h3 style={{ fontSize: '1.3rem', marginBottom: '12px', color: '#fff' }}>Leave Team</h3>
+                            <p style={{ color: '#888', marginBottom: '24px', lineHeight: '1.5' }}>
+                                Are you sure you want to leave <strong style={{ color: '#fff' }}>{team.name}</strong>? You will need an invite to rejoin.
+                            </p>
+                            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                                <button
+                                    onClick={() => setLeaveModal(false)}
+                                    style={{
+                                        padding: '12px 24px',
+                                        background: 'transparent',
+                                        border: '1px solid #444',
+                                        borderRadius: '8px',
+                                        color: '#fff',
+                                        cursor: 'pointer',
+                                        fontWeight: '600',
+                                        fontSize: '0.95rem'
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleLeave}
+                                    style={{
+                                        padding: '12px 24px',
+                                        background: '#ef4444',
+                                        border: 'none',
+                                        borderRadius: '8px',
+                                        color: '#fff',
+                                        cursor: 'pointer',
+                                        fontWeight: '600',
+                                        fontSize: '0.95rem'
+                                    }}
+                                >
+                                    Leave Team
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 <div className={styles.container}>
                     <div className={styles.header}>
                         <h2 className={styles.title}>My Team</h2>
@@ -338,7 +402,7 @@ export default function MyTeam() {
                             </div>
                         )}
 
-                        <button onClick={handleLeave} style={{ marginTop: '2rem', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}>
+                        <button onClick={() => setLeaveModal(true)} style={{ marginTop: '2rem', background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer' }}>
                             Leave Team
                         </button>
                     </div>
