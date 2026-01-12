@@ -112,7 +112,7 @@ export default function CreatorManager() {
 
             {/* List */}
             <h2 style={{ fontSize: '1.5rem', marginBottom: '24px', fontWeight: 'bold' }}>All Creators</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
                 {creators.map(c => (
                     <div key={c.id} style={{ background: '#1a1a1a', borderRadius: '16px', padding: '24px', border: '1px solid #333', textAlign: 'center', transition: 'transform 0.2s' }}>
                         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#222', margin: '0 auto 16px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #333' }}>
