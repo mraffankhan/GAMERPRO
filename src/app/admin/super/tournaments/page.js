@@ -261,6 +261,7 @@ export default function TournamentManager() {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #333', paddingTop: '16px', marginTop: 'auto' }}>
                                 <span style={{ fontSize: '0.8rem', color: '#666' }}>{new Date(t.created_at).toLocaleDateString()}</span>
                                 <div style={{ display: 'flex', gap: '8px' }}>
+                                    <Link href={`/admin/super/tournaments/${t.id}`} style={{ padding: '6px 12px', background: '#fff', border: 'none', borderRadius: '6px', color: '#000', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600', textDecoration: 'none' }}>Manage</Link>
                                     <button onClick={() => handleEdit(t)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #34d399', borderRadius: '6px', color: '#34d399', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600' }}>Edit</button>
                                     <button onClick={() => confirmDelete(t.id, t.name)} style={{ padding: '6px 12px', background: 'transparent', border: '1px solid #ef4444', borderRadius: '6px', color: '#ef4444', cursor: 'pointer', fontSize: '0.85rem', fontWeight: '600' }}>Delete</button>
                                 </div>
