@@ -9,9 +9,11 @@ export default function TournamentManager() {
     const [tournaments, setTournaments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState('');
-    const [formData, setFormData] = useState({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 12, total_stages: 5 });
-    const [editingId, setEditingId] = useState(null); // Add editing state
+    const [formData, setFormData] = useState({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 12, total_stages: 5, stages: ['Qualifiers', 'Quarter', 'Semi', 'Final', 'Grand Final'] });
+    const [editingId, setEditingId] = useState(null);
     const [deleteModal, setDeleteModal] = useState({ show: false, id: null, name: '' });
+
+    const availableStages = ['Qualifiers', 'Quarter', 'Semi', 'Final', 'Grand Final'];
     const router = useRouter();
 
     useEffect(() => {
@@ -36,9 +38,12 @@ export default function TournamentManager() {
         setMessage(editingId ? 'Updating...' : 'Creating...');
 
         // Format date for display updates
+        const stagesToSave = formData.stages && formData.stages.length > 0 ? formData.stages : availableStages;
         const formattedData = {
             ...formData,
-            start_date: formData.start_date ? new Date(formData.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''
+            start_date: formData.start_date ? new Date(formData.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '',
+            stages: stagesToSave,
+            total_stages: stagesToSave.length
         };
 
         if (editingId) {
@@ -63,7 +68,7 @@ export default function TournamentManager() {
     };
 
     const resetForm = () => {
-        setFormData({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 12, total_stages: 5 });
+        setFormData({ name: '', game: 'FREE FIRE MAX', prize: '', start_date: '', image_url: '', max_teams: 12, total_stages: 5, stages: ['Qualifiers', 'Quarter', 'Semi', 'Final', 'Grand Final'] });
         setEditingId(null);
     };
 
@@ -83,7 +88,8 @@ export default function TournamentManager() {
             start_date: dateVal,
             image_url: t.image_url || '',
             max_teams: t.max_teams || 12,
-            total_stages: t.total_stages || 5
+            total_stages: t.total_stages || 5,
+            stages: t.stages || ['Qualifiers', 'Quarter', 'Semi', 'Final', 'Grand Final']
         });
         setEditingId(t.id);
         setMessage('');
@@ -200,9 +206,29 @@ export default function TournamentManager() {
                         </select>
                     </div>
                     <div>
-                        <label style={labelStyle}>Tournament Format</label>
-                        <div style={{ padding: '12px', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#888', fontSize: '0.9rem' }}>
-                            5 Stages: Qualifiers → Quarter → Semi → Final → Grand Final
+                        <label style={labelStyle}>Tournament Stages (Select Needed)</label>
+                        <div style={{ padding: '12px', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff', fontSize: '0.9rem', display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                            {availableStages.map(stage => (
+                                <label key={stage} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}>
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.stages.includes(stage)}
+                                        onChange={(e) => {
+                                            let newStages = [...formData.stages];
+                                            if (e.target.checked) {
+                                                if (!newStages.includes(stage)) newStages.push(stage);
+                                            } else {
+                                                newStages = newStages.filter(s => s !== stage);
+                                            }
+                                            // Sort by predefined order
+                                            newStages.sort((a, b) => availableStages.indexOf(a) - availableStages.indexOf(b));
+                                            setFormData({ ...formData, stages: newStages });
+                                        }}
+                                        style={{ accentColor: '#34d399', width: '16px', height: '16px', cursor: 'pointer' }}
+                                    />
+                                    {stage}
+                                </label>
+                            ))}
                         </div>
                     </div>
                     <div style={{ gridColumn: '1 / -1', marginTop: '12px' }}>

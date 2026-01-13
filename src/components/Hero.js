@@ -25,8 +25,8 @@ export default function Hero() {
                     <Link href="/tournaments" className="btn-primary">
                         Start Competing
                     </Link>
-                    <button className="btn-secondary">
-                        Watch Trailer
+                    <button className="btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                        Coming Soon
                     </button>
                 </div>
 

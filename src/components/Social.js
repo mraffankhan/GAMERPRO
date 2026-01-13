@@ -13,20 +13,9 @@ export default function Social() {
                 <h2 className={styles.title}>Community Feed</h2>
 
                 <div className={styles.feed}>
-                    {feed.map((post) => (
-                        <div key={post.id} className={styles.post}>
-                            <div className={styles.postHeader}>
-                                <span className={styles.user}>{post.user}</span>
-                                <span className={styles.time}>{post.time}</span>
-                            </div>
-                            <p className={styles.content}>{post.content}</p>
-                            <div className={styles.actions}>
-                                <button>Like</button>
-                                <button>Comment</button>
-                                <button>Share</button>
-                            </div>
-                        </div>
-                    ))}
+                    <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <h3 style={{ color: '#aaa', fontWeight: '400' }}>Social Media handles will be available here soon! 🚀</h3>
+                    </div>
                 </div>
             </div>
         </section>

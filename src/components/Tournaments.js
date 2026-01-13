@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 
 export default function Tournaments() {
     const [tournaments, setTournaments] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [registering, setRegistering] = useState(null);
     const [modal, setModal] = useState({ show: false, type: 'info', title: '', message: '', action: null });
     const [teamSelectModal, setTeamSelectModal] = useState({ show: false, tournamentId: null, tournamentName: '', teams: [] });
@@ -20,6 +21,7 @@ export default function Tournaments() {
                 .select('*')
                 .order('start_date', { ascending: true });
             if (data) setTournaments(data);
+            setLoading(false);
         };
         fetchTournaments();
 
@@ -359,8 +361,15 @@ export default function Tournaments() {
                 </div>
 
                 <div className={styles.grid}>
-                    {tournaments.length === 0 ? (
-                        <p style={{ color: '#888' }}>Loading tournaments...</p>
+                    {loading ? (
+                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '40px', color: '#666' }}>
+                            Loading tournaments...
+                        </div>
+                    ) : tournaments.length === 0 ? (
+                        <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <h3 style={{ color: '#fff', marginBottom: '8px' }}>No Ongoing Tournaments</h3>
+                            <p style={{ color: '#888' }}>Check back later for new events!</p>
+                        </div>
                     ) : (
                         tournaments.map((t) => (
                             <div key={t.id} className={`${styles.card} glass-panel`}>

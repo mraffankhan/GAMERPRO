@@ -6,6 +6,7 @@ import styles from './Creators.module.css';
 
 export default function Creators() {
     const [creators, setCreators] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCreators = async () => {
@@ -13,6 +14,7 @@ export default function Creators() {
                 .from('creators')
                 .select('*');
             if (data) setCreators(data);
+            setLoading(false);
         };
         fetchCreators();
     }, []);
@@ -26,8 +28,13 @@ export default function Creators() {
                 </div>
 
                 <div className={styles.cards}>
-                    {creators.length === 0 ? (
-                        <p style={{ color: '#888' }}>Loading creators...</p>
+                    {loading ? (
+                        <p style={{ color: '#666', textAlign: 'center', width: '100%', padding: '40px' }}>Loading creators...</p>
+                    ) : creators.length === 0 ? (
+                        <div style={{ textAlign: 'center', width: '100%', padding: '60px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <h3 style={{ color: '#fff', marginBottom: '8px', fontSize: '1.2rem' }}>No Partnered Creators</h3>
+                            <p style={{ color: '#888' }}>Check back later for updates!</p>
+                        </div>
                     ) : (
                         creators.map((c) => (
                             <div key={c.id} className={styles.card}>
