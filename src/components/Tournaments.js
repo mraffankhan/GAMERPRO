@@ -397,28 +397,48 @@ export default function Tournaments() {
                                             <span className={styles.value}>{t.total_stages || 5} Stages</span>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => handleRegister(t.id, t.name)}
-                                        disabled={registering === t.id}
-                                        style={{
-                                            width: '100%',
-                                            marginTop: '1rem',
-                                            padding: '12px',
-                                            borderRadius: '8px',
-                                            border: 'none',
-                                            background: 'var(--accent-primary)',
-                                            color: '#000',
-                                            fontWeight: 'bold',
-                                            cursor: 'pointer',
-                                            opacity: registering === t.id ? 0.7 : 1,
-                                            fontSize: '0.9rem',
-                                            transition: 'all 0.2s ease'
-                                        }}
-                                        onMouseOver={(e) => { if (registering !== t.id) e.target.style.background = '#fff'; }}
-                                        onMouseOut={(e) => { if (registering !== t.id) e.target.style.background = 'var(--accent-primary)'; }}
-                                    >
-                                        {registering === t.id ? 'Checking...' : 'Register Team'}
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '1rem' }}>
+                                        <button
+                                            onClick={() => router.push(`/tournaments/${t.id}`)}
+                                            style={{
+                                                flex: 1,
+                                                padding: '12px',
+                                                borderRadius: '8px',
+                                                border: '1px solid #444',
+                                                background: 'transparent',
+                                                color: '#fff',
+                                                fontWeight: '600',
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseOver={(e) => { e.target.style.background = '#333'; }}
+                                            onMouseOut={(e) => { e.target.style.background = 'transparent'; }}
+                                        >
+                                            View Lobby
+                                        </button>
+                                        <button
+                                            onClick={() => handleRegister(t.id, t.name)}
+                                            disabled={registering === t.id}
+                                            style={{
+                                                flex: 1,
+                                                padding: '12px',
+                                                borderRadius: '8px',
+                                                border: 'none',
+                                                background: 'var(--accent-primary)',
+                                                color: '#000',
+                                                fontWeight: 'bold',
+                                                cursor: 'pointer',
+                                                opacity: registering === t.id ? 0.7 : 1,
+                                                fontSize: '0.9rem',
+                                                transition: 'all 0.2s ease'
+                                            }}
+                                            onMouseOver={(e) => { if (registering !== t.id) e.target.style.background = '#fff'; }}
+                                            onMouseOut={(e) => { if (registering !== t.id) e.target.style.background = 'var(--accent-primary)'; }}
+                                        >
+                                            {registering === t.id ? 'Checking...' : 'Register'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))
