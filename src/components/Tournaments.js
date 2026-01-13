@@ -9,6 +9,8 @@ export default function Tournaments() {
     const [tournaments, setTournaments] = useState([]);
     const [registering, setRegistering] = useState(null);
     const [modal, setModal] = useState({ show: false, type: 'info', title: '', message: '', action: null });
+    const [teamSelectModal, setTeamSelectModal] = useState({ show: false, tournamentId: null, tournamentName: '', teams: [] });
+    const [userRole, setUserRole] = useState(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -20,6 +22,20 @@ export default function Tournaments() {
             if (data) setTournaments(data);
         };
         fetchTournaments();
+
+        // Fetch user role
+        const fetchUserRole = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', session.user.id)
+                    .single();
+                if (profile) setUserRole(profile.role);
+            }
+        };
+        fetchUserRole();
     }, []);
 
     const showModal = (type, title, message, action = null) => {
@@ -28,6 +44,31 @@ export default function Tournaments() {
 
     const closeModal = () => {
         setModal({ show: false, type: 'info', title: '', message: '', action: null });
+    };
+
+    const closeTeamSelectModal = () => {
+        setTeamSelectModal({ show: false, tournamentId: null, tournamentName: '', teams: [] });
+    };
+
+    const registerTeamForTournament = async (teamId, teamName, tournamentId, tournamentName) => {
+        const { error } = await supabase
+            .from('tournament_registrations')
+            .insert([{
+                tournament_id: tournamentId,
+                team_id: teamId
+            }]);
+
+        closeTeamSelectModal();
+
+        if (error) {
+            if (error.code === '23505') {
+                showModal('info', 'Already Registered', `Team "${teamName}" is already registered for this tournament.`);
+            } else {
+                showModal('error', 'Registration Failed', error.message);
+            }
+        } else {
+            showModal('success', 'Registration Successful! 🎉', `Team "${teamName}" has been registered for ${tournamentName}. Good luck!`);
+        }
     };
 
     const handleRegister = async (tournamentId, tournamentName) => {
@@ -41,7 +82,28 @@ export default function Tournaments() {
             return;
         }
 
-        // 2. Get User's Team and Role
+        // 2. Check if Super Admin - bypass all restrictions
+        if (userRole === 'super_admin') {
+            // Fetch all teams with 4 members for super admin to choose
+            const { data: allTeams } = await supabase
+                .from('teams')
+                .select('id, name, members_count')
+                .eq('members_count', 4)
+                .order('name', { ascending: true });
+
+            if (!allTeams || allTeams.length === 0) {
+                showModal('warning', 'No Eligible Teams', 'There are no teams with exactly 4 members available for registration.');
+                setRegistering(null);
+                return;
+            }
+
+            // Show team selection modal for super admin
+            setTeamSelectModal({ show: true, tournamentId, tournamentName, teams: allTeams });
+            setRegistering(null);
+            return;
+        }
+
+        // 3. Get User's Team and Role (for normal users)
         const { data: memberData } = await supabase
             .from('team_members')
             .select('team_id, role, teams(name, members_count)')
@@ -54,21 +116,21 @@ export default function Tournaments() {
             return;
         }
 
-        // 3. Check if Captain
+        // 4. Check if Captain
         if (memberData.role !== 'captain') {
             showModal('error', 'Captain Only', 'Only team captains can register for tournaments. Ask your captain to register the team.');
             setRegistering(null);
             return;
         }
 
-        // 4. Check Team Size (Compulsory 4)
+        // 5. Check Team Size (Compulsory 4)
         if (memberData.teams.members_count !== 4) {
             showModal('warning', 'Team Incomplete', `Your team needs exactly 4 members to register. You currently have ${memberData.teams.members_count} member(s).`);
             setRegistering(null);
             return;
         }
 
-        // 5. Register
+        // 6. Register
         const { error } = await supabase
             .from('tournament_registrations')
             .insert([{
@@ -192,6 +254,100 @@ export default function Tournaments() {
                                 </button>
                             )}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Super Admin Team Selection Modal */}
+            {teamSelectModal.show && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0, 0, 0, 0.85)',
+                    backdropFilter: 'blur(8px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000,
+                    padding: '20px'
+                }}>
+                    <div style={{
+                        background: '#1a1a1a',
+                        border: '1px solid #10b98133',
+                        borderRadius: '16px',
+                        padding: '32px',
+                        maxWidth: '500px',
+                        width: '100%',
+                        textAlign: 'center',
+                        boxShadow: '0 0 40px rgba(16, 185, 129, 0.2)',
+                        maxHeight: '80vh',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}>
+                        <div style={{ fontSize: '2.5rem', marginBottom: '12px' }}>👑</div>
+                        <h3 style={{ fontSize: '1.3rem', marginBottom: '8px', color: '#fff' }}>
+                            Super Admin Registration
+                        </h3>
+                        <p style={{ color: '#888', marginBottom: '20px', fontSize: '0.9rem' }}>
+                            Select a team to register for <span style={{ color: '#10b981' }}>{teamSelectModal.tournamentName}</span>
+                        </p>
+                        <div style={{
+                            flex: 1,
+                            overflowY: 'auto',
+                            marginBottom: '20px',
+                            maxHeight: '300px'
+                        }}>
+                            {teamSelectModal.teams.map((team) => (
+                                <div
+                                    key={team.id}
+                                    onClick={() => registerTeamForTournament(team.id, team.name, teamSelectModal.tournamentId, teamSelectModal.tournamentName)}
+                                    style={{
+                                        padding: '14px 16px',
+                                        background: '#0f0f0f',
+                                        border: '1px solid #333',
+                                        borderRadius: '10px',
+                                        marginBottom: '10px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        transition: 'all 0.2s ease'
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.currentTarget.style.borderColor = '#10b981';
+                                        e.currentTarget.style.background = '#111';
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.currentTarget.style.borderColor = '#333';
+                                        e.currentTarget.style.background = '#0f0f0f';
+                                    }}
+                                >
+                                    <span style={{ color: '#fff', fontWeight: '600' }}>{team.name}</span>
+                                    <span style={{ color: '#888', fontSize: '0.85rem' }}>
+                                        {team.members_count} members
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+                        <button
+                            onClick={closeTeamSelectModal}
+                            style={{
+                                padding: '12px 24px',
+                                background: 'transparent',
+                                border: '1px solid #444',
+                                borderRadius: '8px',
+                                color: '#fff',
+                                cursor: 'pointer',
+                                fontWeight: '600',
+                                fontSize: '0.95rem'
+                            }}
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </div>
             )}

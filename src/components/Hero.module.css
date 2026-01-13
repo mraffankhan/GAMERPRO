@@ -5,8 +5,7 @@
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding-top: 140px;
-    /* Offset for navbar */
+    padding-top: 120px;
 }
 
 .background {
@@ -16,27 +15,110 @@
     width: 100%;
     height: 100%;
     z-index: -1;
-    background:
-        radial-gradient(circle at 15% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 40%),
-        radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 30%);
+    overflow: hidden;
 }
 
+.blob1 {
+    position: absolute;
+    top: -20%;
+    left: -10%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 60%);
+    filter: blur(80px);
+    animation: float 20s infinite ease-in-out;
+}
+
+.blob2 {
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
+    filter: blur(100px);
+    animation: float 25s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform: translate(30px, -50px);
+    }
+}
 
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    max-width: 900px;
+    width: 100%;
+    max-width: 1400px;
+    padding: 0 24px;
+    z-index: 10;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    margin-bottom: 32px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    backdrop-filter: blur(10px);
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.badgeNew {
+    background: var(--accent-primary);
+    color: #000;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
 }
 
 .headline {
     font-family: var(--font-heading);
-    font-weight: 800;
-    font-size: 4rem;
-    line-height: 1.1;
+    font-weight: 700;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    /* Massive responsive text */
+    line-height: 1;
     letter-spacing: -0.04em;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    color: #fff;
+    animation: fadeInUp 0.8s ease-out 0.2s backwards;
+}
+
+.highlight {
+    color: var(--accent-primary);
+    position: relative;
+    display: inline-block;
+}
+
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    height: 10%
+        /* Underline block */
+    ;
+    background: var(--accent-primary);
+    opacity: 0.3;
+    z-index: -1;
+    transform: skewX(-20deg);
 }
 
 .subtext {
@@ -45,50 +127,148 @@
     color: var(--text-secondary);
     line-height: 1.6;
     max-width: 600px;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
+    animation: fadeInUp 0.8s ease-out 0.4s backwards;
 }
 
 .actions {
     display: flex;
-    gap: 16px;
+    gap: 20px;
+    animation: fadeInUp 0.8s ease-out 0.6s backwards;
+}
+
+/* Partners Ticker */
+.partnersSection {
+    margin-top: 60px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+    /* Fade edges */
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.partnersLabel {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    font-weight: 500;
+}
+
+.tickerContainer {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+}
+
+.tickerTrack {
+    display: flex;
+    gap: 60px;
+    animation: scroll 30s linear infinite;
+    width: max-content;
+}
+
+.partnerLogos {
+    display: flex;
+    gap: 60px;
+    align-items: center;
+}
+
+.partnerLogo {
+    height: 48px;
+    /* Fixed height for consistency */
+    width: auto;
+    opacity: 0.8;
+    /* Removed grayscale */
+    transition: all 0.3s;
+    object-fit: contain;
+}
+
+.partnerLogo:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+        /* Move half the track (assuming content is doubled) */
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 768px) {
     .container {
-        padding: 0 16px;
+        padding: 0 20px;
     }
 
     .hero {
-        padding-top: 100px;
-        /* Reduced for mobile */
-        min-height: auto;
-        padding-bottom: 60px;
+        padding-top: 60px;
+        min-height: 100vh;
+        /* Ensure full height */
+        padding-bottom: 40px;
+        align-items: center;
+        /* Center visually */
+        justify-content: center;
     }
 
     .headline {
-        font-size: 2.25rem;
-        /* Better wrapping */
-        margin-bottom: 16px;
+        font-size: 2.75rem;
+        margin-bottom: 20px;
+        margin-top: 0;
     }
 
     .subtext {
         font-size: 1rem;
+        margin-bottom: 24px;
         padding: 0;
-        margin-bottom: 32px;
     }
 
     .actions {
         flex-direction: column;
         width: 100%;
-        max-width: 300px;
+        max-width: 100%;
+        gap: 12px;
+        margin-bottom: 16px;
     }
 
-    .actions button,
-    .actions a {
-        width: 100% !important;
-        justify-content: center;
-        text-align: center;
-        box-sizing: border-box;
-        /* Ensure padding doesn't affect width */
+    .partnersSection {
+        margin-top: 0;
+        /* Tighten up */
+        mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    }
+
+    .partnerLogo {
+        height: 40px;
     }
 }

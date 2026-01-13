@@ -3,48 +3,64 @@
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding: 80px 0 40px;
     margin-top: 100px;
+    text-align: center;
 }
 
 .container {
     display: flex;
     flex-direction: column;
     gap: 60px;
+    align-items: center;
 }
 
 .top {
     display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    width: 100%;
 }
 
 .brand {
-    max-width: 300px;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .logo {
     font-family: var(--font-heading);
     font-weight: 800;
-    font-size: 1.5rem;
+    font-size: 2.5rem;
+    /* Bigger logo */
     color: #fff;
     margin-bottom: 16px;
     letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .desc {
     color: var(--text-secondary);
     line-height: 1.6;
+    font-size: 1.1rem;
 }
 
 .links {
     display: flex;
-    gap: 80px;
+    gap: 60px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .column {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    align-items: center;
+    /* Center items in column too */
 }
 
 .column h4 {
@@ -52,32 +68,45 @@
     color: #fff;
     font-weight: 600;
     margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
 }
 
 .column a {
     color: var(--text-secondary);
-    font-size: 0.9rem;
-    transition: color 0.2s;
+    font-size: 0.95rem;
+    transition: all 0.2s;
 }
 
 .column a:hover {
-    color: #fff;
+    color: var(--accent-primary);
+    transform: translateY(-2px);
 }
 
 .bottom {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
     padding-top: 30px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     color: var(--text-secondary);
     font-size: 0.85rem;
+    width: 100%;
 }
 
 .legal {
     display: flex;
-    gap: 24px;
+    gap: 32px;
+}
+
+.legal a {
+    color: var(--text-secondary);
+    transition: color 0.2s;
 }
 
 .legal a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    color: #fff;
 }
