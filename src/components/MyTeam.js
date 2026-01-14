@@ -255,28 +255,8 @@ export default function MyTeam() {
             <section className={styles.section}>
                 {/* Leave Team Modal */}
                 {leaveModal && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: 'rgba(0, 0, 0, 0.8)',
-                        backdropFilter: 'blur(8px)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000
-                    }}>
-                        <div style={{
-                            background: '#1a1a1a',
-                            border: '1px solid #333',
-                            borderRadius: '16px',
-                            padding: '32px',
-                            maxWidth: '400px',
-                            width: '90%',
-                            textAlign: 'center'
-                        }}>
+                    <div className={styles.modalOverlay}>
+                        <div className={styles.modalContent}>
                             <div style={{ fontSize: '3rem', marginBottom: '16px' }}>⚠️</div>
                             <h3 style={{ fontSize: '1.3rem', marginBottom: '12px', color: '#fff' }}>Leave Team</h3>
                             <p style={{ color: '#888', marginBottom: '24px', lineHeight: '1.5' }}>
@@ -285,30 +265,18 @@ export default function MyTeam() {
                             <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
                                 <button
                                     onClick={() => setLeaveModal(false)}
-                                    style={{
-                                        padding: '12px 24px',
-                                        background: 'transparent',
-                                        border: '1px solid #444',
-                                        borderRadius: '8px',
-                                        color: '#fff',
-                                        cursor: 'pointer',
-                                        fontWeight: '600',
-                                        fontSize: '0.95rem'
-                                    }}
+                                    className={`${styles.btn} ${styles.btnSecondary}`}
+                                    style={{ padding: '12px 24px' }}
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleLeave}
+                                    className={styles.btn}
                                     style={{
                                         padding: '12px 24px',
                                         background: '#ef4444',
-                                        border: 'none',
-                                        borderRadius: '8px',
                                         color: '#fff',
-                                        cursor: 'pointer',
-                                        fontWeight: '600',
-                                        fontSize: '0.95rem'
                                     }}
                                 >
                                     Leave Team
