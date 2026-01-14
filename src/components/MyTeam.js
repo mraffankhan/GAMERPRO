@@ -66,7 +66,7 @@ export default function MyTeam() {
     const fetchInvites = async (userId) => {
         const { data } = await supabase
             .from('team_invites')
-            .select('id, status, teams(name, logo_url)')
+            .select('id, status, team_id, teams(name, logo_url)')
             .eq('user_id', userId)
             .eq('status', 'pending');
         if (data) setInvites(data);
@@ -223,19 +223,8 @@ export default function MyTeam() {
         setInvites([]); // Clear invites
     };
 
-    // Correct fetchInvites to include team_id
-    const fetchInvitesCorrected = async (userId) => {
-        const { data } = await supabase
-            .from('team_invites')
-            .select('id, status, team_id, teams(name, logo_url)')
-            .eq('user_id', userId)
-            .eq('status', 'pending');
-        if (data) setInvites(data);
-    };
-
-    // Override the previous fetchInvites with this one in the effect
     useEffect(() => {
-        if (user && !team) fetchInvitesCorrected(user.id);
+        if (user && !team) fetchInvites(user.id);
     }, [user, team]);
 
 
