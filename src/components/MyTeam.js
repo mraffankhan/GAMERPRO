@@ -228,7 +228,16 @@ export default function MyTeam() {
     }, [user, team]);
 
 
-    if (loading) return null;
+    if (loading) return (
+        <section className={styles.section}>
+            <div className={styles.container}>
+                <div className={styles.card} style={{ textAlign: 'center', padding: '3rem' }}>
+                    <div className={styles.loader}></div>
+                    <p style={{ color: '#888', marginTop: '1rem' }}>Loading team data...</p>
+                </div>
+            </div>
+        </section>
+    );
 
     if (!user) return (
         <section className={styles.section}>
