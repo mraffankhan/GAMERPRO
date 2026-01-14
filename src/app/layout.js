@@ -22,8 +22,31 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata = {
-  title: "GamerPro | premium esports platform",
-  description: "Where Competitive Esports Meets Opportunity",
+  title: "GamerPro | Premium Esports Platform",
+  description: "Where Competitive Esports Meets Opportunity. Join tournaments, form teams, and climb the ranks.",
+  keywords: ["esports", "tournaments", "gaming", "teams", "gamerpro", "competitive gaming"],
+  authors: [{ name: "GamerPro Team" }],
+  openGraph: {
+    title: "GamerPro | Premium Esports Platform",
+    description: "Where Competitive Esports Meets Opportunity",
+    url: "https://gamerpro.com",
+    siteName: "GamerPro",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GamerPro | Premium Esports Platform",
+    description: "Where Competitive Esports Meets Opportunity",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({ children }) {
