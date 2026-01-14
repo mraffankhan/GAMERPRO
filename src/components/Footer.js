@@ -21,22 +21,28 @@ export default function Footer() {
 
                     <div className={styles.links}>
                         <div className={styles.column}>
-                            <h4>Platform</h4>
-                            <a href="#">Tournaments</a>
-                            <a href="#">Teams</a>
-                            <a href="#">Creators</a>
+                            <h4 id="footer-platform">Platform</h4>
+                            <nav aria-labelledby="footer-platform">
+                                <a href="/tournaments">Tournaments</a>
+                                <a href="/teams">Teams</a>
+                                <a href="/creators">Creators</a>
+                            </nav>
                         </div>
                         <div className={styles.column}>
-                            <h4>Company</h4>
-                            <a href="#">About</a>
-                            <a href="#">Careers</a>
-                            <a href="#">Contact</a>
+                            <h4 id="footer-company">Company</h4>
+                            <nav aria-labelledby="footer-company">
+                                <a href="/about">About</a>
+                                <a href="/careers">Careers</a>
+                                <a href="/contact">Contact</a>
+                            </nav>
                         </div>
                         <div className={styles.column}>
-                            <h4>Social</h4>
-                            <a href="#">Twitter</a>
-                            <a href="#">Discord</a>
-                            <a href="#">Instagram</a>
+                            <h4 id="footer-social">Social</h4>
+                            <nav aria-labelledby="footer-social">
+                                <a href="https://twitter.com/gamerpro" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter">Twitter</a>
+                                <a href="https://discord.gg/gamerpro" target="_blank" rel="noopener noreferrer" aria-label="Join our Discord">Discord</a>
+                                <a href="https://instagram.com/gamerpro" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">Instagram</a>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -44,8 +50,8 @@ export default function Footer() {
                 <div className={styles.bottom}>
                     <p>&copy; 2026 GamerPro Inc. All rights reserved.</p>
                     <div className={styles.legal}>
-                        <a href="#">Privacy</a>
-                        <a href="#">Terms</a>
+                        <a href="/privacy">Privacy</a>
+                        <a href="/terms">Terms</a>
                     </div>
                 </div>
             </div>
