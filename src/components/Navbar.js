@@ -79,7 +79,7 @@ export default function Navbar() {
     return (
         <nav className={styles.navbar}>
             <div className={`container ${styles.container}`}>
-                <Link href="/" className={styles.logo}>
+                <Link href="/" className={styles.logo} aria-label="GamerPro Home">
                     <span className={styles.desktopLogo}>GAMERPRO</span>
                     <span className={styles.mobileLogo}>{getMobileTitle()}</span>
                 </Link>
@@ -103,7 +103,14 @@ export default function Navbar() {
 
                 <div className={styles.actions}>
                     {user ? (
-                        <div className={styles.profileSection} onClick={toggleProfile}>
+                        <div
+                            className={styles.profileSection}
+                            onClick={toggleProfile}
+                            role="button"
+                            aria-haspopup="true"
+                            aria-expanded={showProfile}
+                            aria-label="User Profile Menu"
+                        >
                             <span className={styles.username}>{getDisplayName()}</span>
                             <div className={styles.profileIcon}>
                                 {user.user_metadata?.avatar_url ? (
