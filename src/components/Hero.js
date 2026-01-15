@@ -22,10 +22,10 @@ export default function Hero() {
                 </p>
 
                 <div className={styles.actions}>
-                    <Link href="/tournaments" className="btn-primary">
+                    <Link href="/tournaments" className={styles.glassBtnPrimary}>
                         Start Competing
                     </Link>
-                    <button className="btn-secondary" style={{ opacity: 0.6, cursor: 'not-allowed' }}>
+                    <button className={styles.glassBtnSecondary}>
                         Coming Soon
                     </button>
                 </div>
