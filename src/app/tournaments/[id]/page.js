@@ -68,7 +68,7 @@ export default function TournamentLobby() {
                     .select('*')
                     .eq('tournament_id', id)
                     .eq('team_id', memberData.team_id)
-                    .single();
+                    .maybeSingle();
 
                 if (registration) {
                     // Find user's group

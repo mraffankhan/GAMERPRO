@@ -40,7 +40,7 @@ export default function Hero() {
                             {[1, 2, 3, 4, 5, 6].map((i) => (
                                 <div key={i} className={styles.partnerLogos}>
                                     <img src="/Untitled8.png" alt="DU ESPORTS" className={styles.partnerLogo} />
-                                    <img src="/Screenshot 2026-01-13 140653.png" alt="REX ESPORTS" className={styles.partnerLogo} />
+                                    <img src="/Screenshot%202026-01-13%20140653.png" alt="REX ESPORTS" className={styles.partnerLogo} />
                                 </div>
                             ))}
                         </div>
