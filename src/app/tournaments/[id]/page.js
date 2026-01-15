@@ -201,20 +201,22 @@ export default function TournamentLobby() {
 
     if (loginRequired) {
         return (
-            <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ textAlign: 'center', padding: '40px', background: '#111', borderRadius: '24px', border: '1px solid #333', maxWidth: '400px', width: '90%' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
-                    <h2 style={{ marginBottom: '12px', fontSize: '1.5rem' }}>Login Required</h2>
-                    <p style={{ color: '#888', marginBottom: '24px', lineHeight: '1.5' }}>
-                        You must be logged in to view tournament details, brackets, and team information.
-                    </p>
-                    <Link href="/login" style={{ display: 'inline-block', padding: '12px 32px', background: 'var(--accent-primary)', borderRadius: '100px', color: '#000', fontWeight: 'bold', textDecoration: 'none', transition: 'all 0.2s' }}>
-                        Login to Access
-                    </Link>
-                    <div style={{ marginTop: '20px' }}>
-                        <Link href="/tournaments" style={{ color: '#666', fontSize: '0.9rem', textDecoration: 'none' }}>
-                            ← Back to Tournaments
-                        </Link>
+            <div style={{ minHeight: '60vh', background: '#0a0a0a', color: '#fff', paddingTop: '120px', paddingBottom: '80px' }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ textAlign: 'center', padding: '60px 40px', background: '#111', borderRadius: '24px', border: '1px solid #333', maxWidth: '500px', width: '100%', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+                        <div style={{ fontSize: '3.5rem', marginBottom: '20px' }}>🔒</div>
+                        <h2 style={{ marginBottom: '16px', fontSize: '2rem', fontWeight: 'bold' }}>Login Required</h2>
+                        <p style={{ color: '#aaa', marginBottom: '32px', lineHeight: '1.6', fontSize: '1.1rem' }}>
+                            Access to tournament lobbies, brackets, and team management is restricted to registered members.
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', alignItems: 'center' }}>
+                            <Link href="/login" style={{ display: 'inline-block', padding: '16px 48px', background: 'var(--accent-primary)', borderRadius: '100px', color: '#000', fontWeight: 'bold', textDecoration: 'none', transition: 'all 0.2s', fontSize: '1.1rem', width: '100%', maxWidth: '280px' }}>
+                                Login to Access
+                            </Link>
+                            <Link href="/tournaments" style={{ color: '#666', fontSize: '0.95rem', textDecoration: 'none', padding: '8px' }}>
+                                ← Back to Tournaments
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
