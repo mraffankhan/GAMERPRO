@@ -16,11 +16,18 @@ export default function TournamentLobby() {
     const [qualifications, setQualifications] = useState([]);
     const [matchResults, setMatchResults] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loginRequired, setLoginRequired] = useState(false);
     const [countdown, setCountdown] = useState(null);
     const [copied, setCopied] = useState('');
 
     const fetchData = useCallback(async () => {
         const { data: { session } } = await supabase.auth.getSession();
+
+        if (!session) {
+            setLoginRequired(true);
+            setLoading(false);
+            return;
+        }
 
         // Fetch Tournament
         const { data: t } = await supabase.from('tournaments').select('*').eq('id', id).single();
@@ -188,6 +195,28 @@ export default function TournamentLobby() {
                         100% { transform: rotate(360deg); }
                     }
                 `}</style>
+            </div>
+        );
+    }
+
+    if (loginRequired) {
+        return (
+            <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ textAlign: 'center', padding: '40px', background: '#111', borderRadius: '24px', border: '1px solid #333', maxWidth: '400px', width: '90%' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
+                    <h2 style={{ marginBottom: '12px', fontSize: '1.5rem' }}>Login Required</h2>
+                    <p style={{ color: '#888', marginBottom: '24px', lineHeight: '1.5' }}>
+                        You must be logged in to view tournament details, brackets, and team information.
+                    </p>
+                    <Link href="/login" style={{ display: 'inline-block', padding: '12px 32px', background: 'var(--accent-primary)', borderRadius: '100px', color: '#000', fontWeight: 'bold', textDecoration: 'none', transition: 'all 0.2s' }}>
+                        Login to Access
+                    </Link>
+                    <div style={{ marginTop: '20px' }}>
+                        <Link href="/tournaments" style={{ color: '#666', fontSize: '0.9rem', textDecoration: 'none' }}>
+                            ← Back to Tournaments
+                        </Link>
+                    </div>
+                </div>
             </div>
         );
     }
