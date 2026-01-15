@@ -5,23 +5,33 @@ export default function Hero() {
     return (
         <section className={styles.hero}>
             <div className={styles.background}>
-                <div className={styles.blob1}></div>
-                <div className={styles.blob2}></div>
+                <div
+                    className={styles.blob1}
+                ></div>
+                <div
+                    className={styles.blob2}
+                ></div>
             </div>
 
             <div className={`container ${styles.container}`}>
-                <h1 className={styles.headline}>
+                <h1
+                    className={styles.headline}
+                >
                     DOMINATE <br />
                     <span className={styles.highlight}>THE ARENA</span>
                 </h1>
 
-                <p className={styles.subtext}>
+                <p
+                    className={styles.subtext}
+                >
                     The elite platform for high-stakes esports.
                     Create, compete, and conquer in tournaments designed for the pros.
                     Experience the next evolution of competitive gaming.
                 </p>
 
-                <div className={styles.actions}>
+                <div
+                    className={styles.actions}
+                >
                     <Link href="/tournaments" className={styles.glassBtnPrimary}>
                         Start Competing
                     </Link>
@@ -30,9 +40,10 @@ export default function Hero() {
                     </button>
                 </div>
 
-                {/* 3D Dashboard Preview Visual */}
                 {/* Partners Ticker */}
-                <div className={styles.partnersSection}>
+                <div
+                    className={styles.partnersSection}
+                >
                     <p className={styles.partnersLabel}>PARTNERED WITH</p>
                     <div className={styles.tickerContainer}>
                         <div className={styles.tickerTrack}>
