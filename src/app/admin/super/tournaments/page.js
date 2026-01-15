@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase-auth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { createTournamentDiscordCategory } from '@/app/actions';
 
 export default function TournamentManager() {
     const [tournaments, setTournaments] = useState([]);
@@ -57,10 +58,26 @@ export default function TournamentManager() {
             }
         } else {
             // Create new
-            const { error } = await supabase.from('tournaments').insert([formattedData]);
+            const { data, error } = await supabase.from('tournaments').insert([formattedData]).select().single();
+
             if (error) setMessage(`Error: ${error.message}`);
             else {
-                setMessage('Created Successfully!');
+                setMessage('Created Successfully! Creating Discord resources...');
+
+                // Trigger Discord Category Creation
+                try {
+                    const result = await createTournamentDiscordCategory(data.id, data.name);
+                    if (result.success && result.categoryId) {
+                        await supabase.from('tournaments').update({ discord_category_id: result.categoryId }).eq('id', data.id);
+                        setMessage('Created Successfully! Discord Category Created.');
+                    } else {
+                        console.error('Discord Error:', result.error);
+                        setMessage('Created, but Discord Category failed (Info in Console).');
+                    }
+                } catch (dErr) {
+                    console.error('Discord Action Error:', dErr);
+                }
+
                 resetForm();
                 fetchTournaments();
             }

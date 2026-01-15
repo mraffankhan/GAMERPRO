@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase-auth';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { generateGroupChannels } from '@/app/actions';
 
 export default function TournamentDetails() {
     const { id } = useParams();
@@ -106,6 +107,8 @@ export default function TournamentDetails() {
             // Delete existing groups for this tournament (reset)
             await supabase.from('groups').delete().eq('tournament_id', id);
 
+            const createdGroups = [];
+
             // Create new groups
             for (let i = 0; i < chunks.length; i++) {
                 const groupName = chunks[i].length < GROUP_SIZE ? 'Wildcard' : `Group ${String.fromCharCode(65 + i)}`;
@@ -118,6 +121,7 @@ export default function TournamentDetails() {
                     .single();
 
                 if (gError) throw gError;
+                createdGroups.push(newGroup);
 
                 // Insert group_teams
                 const groupTeams = chunks[i].map(teamId => ({
@@ -129,7 +133,23 @@ export default function TournamentDetails() {
                 if (gtError) throw gtError;
             }
 
-            setActionMessage(`Successfully created ${chunks.length} groups!`);
+            // Discord Automation
+            if (tournament.discord_category_id) {
+                setActionMessage(`Groups created! Generating Discord Channels...`);
+                const discordResult = await generateGroupChannels(tournament.discord_category_id, createdGroups);
+
+                if (discordResult.success) {
+                    for (const res of discordResult.results) {
+                        await supabase.from('groups').update({ discord_channel_id: res.channelId }).eq('id', res.groupId);
+                    }
+                    setActionMessage(`Successfully created ${chunks.length} groups & Discord channels!`);
+                } else {
+                    setActionMessage(`Groups created, but Discord failed: ${discordResult.error}`);
+                }
+            } else {
+                setActionMessage(`Successfully created ${chunks.length} groups! (No Discord Category linked)`);
+            }
+
             fetchData(); // Refresh
         } catch (err) {
             console.error(err);
