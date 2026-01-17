@@ -81,42 +81,70 @@ export default function TournamentDetails() {
 
     // Generate Groups Logic
     const handleGenerateGroups = async () => {
-        if (registrations.length === 0) {
-            setActionMessage('No teams registered. Cannot generate groups.');
-            return;
+        setActionMessage('Generating groups...');
+
+        const GROUP_SIZE = 12; // Or dynamic
+        const stages = tournament.stages || ['Qualifiers'];
+        const currentStage = tournament.current_stage || stages[0];
+        const currentStageIndex = stages.indexOf(currentStage);
+
+        let poolTeamIds = [];
+
+        // 1. Determine Team Pool based on Stage
+        if (currentStageIndex <= 0) {
+            // First Stage: Use All Registrations
+            if (registrations.length === 0) {
+                setActionMessage('No teams registered. Cannot generate groups.');
+                return;
+            }
+            poolTeamIds = registrations.map(r => r.team_id);
+        } else {
+            // Later Stage: Use Qualified Teams targeting this stage
+            // We look for qualifications where to_stage === currentStage
+            const { data: qualifiedTeams, error: qError } = await supabase
+                .from('qualifications')
+                .select('team_id')
+                .eq('tournament_id', id)
+                .eq('to_stage', currentStage);
+
+            if (qError || !qualifiedTeams || qualifiedTeams.length === 0) {
+                setActionMessage(`No teams qualified for ${currentStage} yet.`);
+                return;
+            }
+            poolTeamIds = qualifiedTeams.map(q => q.team_id);
         }
 
-        setActionMessage('Generating groups...');
-        const GROUP_SIZE = 12;
-        const stageName = tournament.current_stage || tournament.stages?.[0] || 'Qualifiers';
+        setActionMessage(`Found ${poolTeamIds.length} teams for ${currentStage}. Shuffling...`);
 
-        // Shuffle teams (Fisher-Yates)
-        const teamIds = registrations.map(r => r.team_id);
+        // 2. Shuffle teams (Fisher-Yates)
+        const teamIds = [...poolTeamIds];
         for (let i = teamIds.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [teamIds[i], teamIds[j]] = [teamIds[j], teamIds[i]];
         }
 
-        // Split into chunks of 12
+        // 3. Split into chunks
         const chunks = [];
         for (let i = 0; i < teamIds.length; i += GROUP_SIZE) {
             chunks.push(teamIds.slice(i, i + GROUP_SIZE));
         }
 
         try {
-            // Delete existing groups for this tournament (reset)
-            await supabase.from('groups').delete().eq('tournament_id', id);
+            // Delete existing groups for THIS stage only (safety)
+            await supabase.from('groups').delete().eq('tournament_id', id).eq('stage_name', currentStage);
 
             const createdGroups = [];
 
-            // Create new groups
+            // 4. Create new groups
             for (let i = 0; i < chunks.length; i++) {
-                const groupName = chunks[i].length < GROUP_SIZE ? 'Wildcard' : `Group ${String.fromCharCode(65 + i)}`;
+                // Name: "Quarter Group A" or "Qualifiers Group B"
+                const groupLetter = String.fromCharCode(65 + i);
+                const groupName = `${currentStage} Group ${groupLetter}`;
 
                 // Insert group
                 const { data: newGroup, error: gError } = await supabase
                     .from('groups')
-                    .insert({ tournament_id: id, stage_name: stageName, name: groupName })
+                    .insert({ tournament_id: id, stage_name: currentStage, name: groupName })
                     .select()
                     .single();
 
@@ -133,9 +161,8 @@ export default function TournamentDetails() {
                 if (gtError) throw gtError;
             }
 
-            // Discord Automation
-            // if (tournament.discord_category_id) { ... } // Replaced by Bot
-            setActionMessage(`Successfully created ${chunks.length} groups! (Discord Bot will handle channels)`);
+            // Msg
+            setActionMessage(`Successfully created ${chunks.length} groups for ${currentStage}! (Discord Bot will handle channels)`);
 
             fetchData(); // Refresh
         } catch (err) {
