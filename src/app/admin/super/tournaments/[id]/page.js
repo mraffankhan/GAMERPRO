@@ -241,8 +241,8 @@ export default function TournamentDetails() {
         const group = groups.find(g => g.id === match.group_id);
         if (group && group.group_teams) {
             const teamsData = group.group_teams.map(gt => ({
-                team_id: gt.teams.id,
-                team_name: gt.teams.name,
+                team_id: gt.teams?.id,
+                team_name: gt.teams?.name || 'Unknown Team',
                 placement: '',
                 kills: 0,
                 points: 0,
