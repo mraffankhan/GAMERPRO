@@ -382,430 +382,462 @@ export default function TournamentDetails() {
         }
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px', textAlign: 'center' }}>Loading details...</div>;
-    if (!tournament) return <div style={{ color: '#fff', padding: '40px', textAlign: 'center' }}>Tournament not found.</div>;
-
-    const tabStyle = (isActive) => ({
-        padding: '12px 24px',
-        background: isActive ? '#34d399' : 'transparent',
-        border: isActive ? 'none' : '1px solid #333',
-        borderRadius: '8px',
-        color: isActive ? '#000' : '#888',
-        fontWeight: '600',
-        cursor: 'pointer',
-        fontSize: '0.9rem'
-    });
+    // Premium UI Styles
+    const styles = {
+        container: { maxWidth: '1200px', margin: '0 auto', color: '#fff', paddingBottom: '100px', fontFamily: "'Inter', sans-serif" },
+        glassPanel: { background: 'rgba(20, 20, 20, 0.6)', backdropFilter: 'blur(16px)', borderRadius: '24px', border: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)' },
+        headerBadge: { padding: '6px 16px', borderRadius: '100px', fontSize: '0.85rem', fontWeight: '600', letterSpacing: '0.5px' },
+        tabBtn: (isActive) => ({
+            padding: '14px 28px',
+            background: isActive ? 'linear-gradient(135deg, #34d399 0%, #10b981 100%)' : 'rgba(255,255,255,0.03)',
+            border: isActive ? 'none' : '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '12px',
+            color: isActive ? '#000' : '#888',
+            fontWeight: '600',
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            transition: 'all 0.3s ease',
+            boxShadow: isActive ? '0 4px 12px rgba(52, 211, 153, 0.3)' : 'none'
+        }),
+        primaryBtn: { padding: '14px 28px', background: 'linear-gradient(135deg, #34d399 0%, #10b981 100%)', border: 'none', borderRadius: '12px', color: '#000', fontWeight: '700', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 12px rgba(52, 211, 153, 0.3)', transition: 'transform 0.2s' },
+        secondaryBtn: { padding: '14px 28px', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontWeight: '600', cursor: 'pointer', fontSize: '1rem', transition: 'all 0.2s' },
+        dangerBtn: { padding: '14px 28px', background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', border: 'none', borderRadius: '12px', color: '#fff', fontWeight: '700', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)' },
+        input: { width: '100%', padding: '12px 16px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff', fontSize: '1rem', outline: 'none' },
+        label: { display: 'block', fontSize: '0.9rem', color: '#aaa', marginBottom: '8px', fontWeight: '500' }
+    };
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', color: '#fff', paddingBottom: '80px' }}>
+        <div style={styles.container}>
             {/* Confirm Modal */}
             {confirmModal.show && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-                    <div style={{ background: '#1a1a1a', border: '1px solid #333', borderRadius: '16px', padding: '32px', maxWidth: '400px', width: '90%', textAlign: 'center' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '16px' }}>
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+                    <div style={{ ...styles.glassPanel, padding: '40px', maxWidth: '450px', width: '90%', textAlign: 'center', border: '1px solid rgba(255,255,255,0.15)' }}>
+                        <div style={{ fontSize: '3.5rem', marginBottom: '24px' }}>
                             {confirmModal.type === 'advance' ? '🚀' : '⚠️'}
                         </div>
-                        <h3 style={{ fontSize: '1.3rem', marginBottom: '12px', color: '#fff' }}>
-                            {confirmModal.type === 'advance' ? 'Advance Tournament Stage' : 'Confirm Disqualification'}
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '16px', color: '#fff', fontWeight: '700' }}>
+                            {confirmModal.type === 'advance' ? 'Advance Criteria' : 'Confirm Action'}
                         </h3>
-                        <p style={{ color: '#888', marginBottom: '24px' }}>
+                        <p style={{ color: '#aaa', marginBottom: '32px', lineHeight: '1.6' }}>
                             {confirmModal.type === 'advance'
-                                ? `Move to ${confirmModal.data?.nextStage}? This will allow you to re-generate groups for qualified teams.`
-                                : `Remove ${confirmModal.data?.teamName} from this tournament?`
+                                ? `Are you sure you want to move to **${confirmModal.data?.nextStage}**? This enables group generation for qualified teams.`
+                                : `Permanently remove **${confirmModal.data?.teamName}** from the tournament?`
                             }
                         </p>
-                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                            <button onClick={() => setConfirmModal({ show: false, type: '', data: null })} style={{ padding: '12px 24px', background: 'transparent', border: '1px solid #444', borderRadius: '8px', color: '#fff', cursor: 'pointer', fontWeight: '600' }}>Cancel</button>
+                        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+                            <button onClick={() => setConfirmModal({ show: false, type: '', data: null })} style={styles.secondaryBtn}>Cancel</button>
                             <button
                                 onClick={confirmModal.type === 'advance' ? confirmAdvanceStage : confirmDisqualify}
-                                style={{ padding: '12px 24px', background: confirmModal.type === 'advance' ? '#34d399' : '#ef4444', border: 'none', borderRadius: '8px', color: confirmModal.type === 'advance' ? '#000' : '#fff', cursor: 'pointer', fontWeight: '600' }}
+                                style={confirmModal.type === 'advance' ? styles.primaryBtn : styles.dangerBtn}
                             >
-                                {confirmModal.type === 'advance' ? 'Advance' : 'Disqualify'}
+                                {confirmModal.type === 'advance' ? 'Confirm Advance' : 'Disqualify Team'}
                             </button>
                         </div>
                     </div>
                 </div>
             )}
 
-            <div style={{ marginBottom: '32px' }}>
+            {/* Breadcrumb */}
+            <div style={{ marginBottom: '40px' }}>
                 <Link href="/admin/super/tournaments" style={{ textDecoration: 'none' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 24px', background: 'rgba(10, 10, 10, 0.6)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '100px', color: '#fff', fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer' }}>← Back</div>
+                    <div style={{ ...styles.secondaryBtn, display: 'inline-flex', alignItems: 'center', gap: '8px', borderRadius: '100px', padding: '10px 24px', fontSize: '0.9rem' }}>
+                        <span>←</span> Back to Dashboard
+                    </div>
                 </Link>
             </div>
 
             {/* Action Message */}
             {actionMessage && (
-                <div style={{ padding: '16px', marginBottom: '24px', borderRadius: '8px', background: actionMessage.includes('Error') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(52, 211, 153, 0.1)', color: actionMessage.includes('Error') ? '#ef4444' : '#34d399', fontWeight: '500' }}>
+                <div style={{
+                    padding: '20px', marginBottom: '32px', borderRadius: '16px',
+                    background: actionMessage.includes('Error') ? 'rgba(239, 68, 68, 0.15)' : 'rgba(52, 211, 153, 0.15)',
+                    border: `1px solid ${actionMessage.includes('Error') ? 'rgba(239, 68, 68, 0.3)' : 'rgba(52, 211, 153, 0.3)'}`,
+                    color: actionMessage.includes('Error') ? '#fca5a5' : '#6ee7b7',
+                    fontWeight: '500', display: 'flex', alignItems: 'center', gap: '12px'
+                }}>
+                    <span style={{ fontSize: '1.2rem' }}>{actionMessage.includes('Error') ? '❌' : '✅'}</span>
                     {actionMessage}
                 </div>
             )}
 
-            {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '32px', flexWrap: 'wrap', gap: '20px' }}>
-                <div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '12px', lineHeight: '1.1' }}>{tournament.name}</h1>
-                    <div style={{ display: 'flex', gap: '16px', color: '#aaa', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span style={{ width: '8px', height: '8px', background: '#34d399', borderRadius: '50%' }}></span>
-                            {tournament.game}
+            {/* Hero Header */}
+            <div style={{ ...styles.glassPanel, padding: '40px', marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '32px' }}>
+                <div style={{ flex: 1 }}>
+                    <h1 style={{ fontSize: '3rem', fontWeight: '800', marginBottom: '16px', letterSpacing: '-1px', background: 'linear-gradient(to right, #fff, #ccc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{tournament.name}</h1>
+                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '24px' }}>
+                        <span style={{ ...styles.headerBadge, background: 'rgba(52, 211, 153, 0.2)', color: '#34d399', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
+                            🎮 {tournament.game}
                         </span>
-                        <span style={{ background: '#333', width: '1px', height: '16px' }}></span>
-                        <span>Max {tournament.max_teams} Teams</span>
-                        <span style={{ background: '#333', width: '1px', height: '16px' }}></span>
-                        <span style={{ color: '#34d399' }}>{tournament.prize} Prize Pool</span>
+                        <span style={{ ...styles.headerBadge, background: 'rgba(255, 255, 255, 0.1)', color: '#ccc' }}>
+                            👥 Max {tournament.max_teams} Teams
+                        </span>
+                        <span style={{ ...styles.headerBadge, background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)', color: '#000', boxShadow: '0 4px 12px rgba(251, 191, 36, 0.2)' }}>
+                            🏆 {tournament.prize}
+                        </span>
                     </div>
-                    <div style={{ marginTop: '12px', display: 'flex', gap: '12px', alignItems: 'center' }}>
-                        <span style={{ padding: '6px 12px', background: '#4f46e5', borderRadius: '100px', fontSize: '0.85rem', fontWeight: '600' }}>
-                            Current Stage: {tournament.current_stage || 'Qualifiers'}
-                        </span>
-                        <span style={{ color: '#888', fontSize: '0.9rem' }}>
-                            {qualifications.length} teams qualified
-                        </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ padding: '8px 16px', background: '#3b82f6', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            STAGE: {tournament.current_stage || 'Qualifiers'}
+                        </div>
+                        <div style={{ color: '#888', fontSize: '0.9rem' }}>
+                            {qualifications.length} teams qualified to next round
+                        </div>
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={handleGenerateGroups} style={{ padding: '12px 24px', background: '#34d399', border: 'none', borderRadius: '8px', color: '#000', fontWeight: 'bold', cursor: 'pointer' }}>
-                        Generate Groups
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: '200px' }}>
+                    <button onClick={handleGenerateGroups} style={styles.primaryBtn}>
+                        Generate Groups 🎲
                     </button>
-                    <button onClick={handleAdvanceStage} style={{ padding: '12px 24px', background: '#4f46e5', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}>
+                    <button onClick={handleAdvanceStage} style={{ ...styles.secondaryBtn, background: '#4f46e5', borderColor: '#4f46e5' }}>
                         Advance Stage →
                     </button>
+                    <div style={{ textAlign: 'center', fontSize: '0.8rem', color: '#666', marginTop: '4px' }}>
+                        Automated Discord Actions
+                    </div>
                 </div>
             </div>
 
-            {/* Tabs */}
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
-                <button onClick={() => setActiveTab('groups')} style={tabStyle(activeTab === 'groups')}>Groups</button>
-                <button onClick={() => setActiveTab('matches')} style={tabStyle(activeTab === 'matches')}>Match Schedule</button>
-                <button onClick={() => setActiveTab('results')} style={tabStyle(activeTab === 'results')}>Results & Qualify</button>
-                <button onClick={() => setActiveTab('teams')} style={tabStyle(activeTab === 'teams')}>Registered Teams</button>
+            {/* Navigation Tabs */}
+            <div style={{ display: 'flex', gap: '16px', marginBottom: '32px', overflowX: 'auto', paddingBottom: '4px' }}>
+                {['groups', 'matches', 'results', 'teams'].map(tab => (
+                    <button key={tab} onClick={() => setActiveTab(tab)} style={styles.tabBtn(activeTab === tab)}>
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                    </button>
+                ))}
             </div>
 
-            {/* GROUPS TAB */}
-            {activeTab === 'groups' && (
-                <div>
-                    {groups.length === 0 ? (
-                        <div style={{ padding: '60px', textAlign: 'center', background: '#1a1a1a', borderRadius: '16px', border: '1px solid #333' }}>
-                            <div style={{ fontSize: '2.5rem', marginBottom: '16px', opacity: 0.3 }}>🎲</div>
-                            <p style={{ color: '#888' }}>No groups generated yet. Click "Generate Groups" to create groups.</p>
-                        </div>
-                    ) : (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
-                            {groups.map(g => (
-                                <div key={g.id} style={{ background: '#1a1a1a', borderRadius: '12px', border: '1px solid #333', padding: '20px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                                        <h4 style={{ fontWeight: 'bold', fontSize: '1.1rem', color: g.name === 'Wildcard' ? '#f59e0b' : '#fff' }}>{g.name}</h4>
-                                        <span style={{ fontSize: '0.8rem', color: '#666', background: '#222', padding: '4px 8px', borderRadius: '4px' }}>{g.group_teams?.length || 0} Teams</span>
-                                    </div>
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        {g.group_teams?.map(gt => {
-                                            const isQualified = qualifications.some(q => q.team_id === gt.teams?.id);
-                                            return (
-                                                <div key={gt.id} style={{ padding: '10px 12px', background: '#111', borderRadius: '6px', fontSize: '0.9rem', color: '#ccc', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                    <span>{gt.teams?.name || 'Unknown'}</span>
-                                                    {isQualified && <span style={{ fontSize: '0.75rem', color: '#34d399', background: 'rgba(52,211,153,0.1)', padding: '2px 8px', borderRadius: '100px' }}>Qualified</span>}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
+            {/* TAB CONTENT AREAS */}
+            <div style={{ minHeight: '400px' }}>
 
-            {/* MATCHES TAB */}
-            {activeTab === 'matches' && (
-                <div>
-                    {/* Schedule New Match Form */}
-                    <div style={{ background: '#1a1a1a', borderRadius: '16px', border: '1px solid #333', padding: '24px', marginBottom: '24px' }}>
-                        <h3 style={{ marginBottom: '20px', fontWeight: '600' }}>Schedule New Match</h3>
-                        <form onSubmit={handleScheduleMatch}>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '20px' }}>
+                {/* GROUPS TAB */}
+                {activeTab === 'groups' && (
+                    <div style={{ animation: 'fadeIn 0.4s ease' }}>
+                        {groups.length === 0 ? (
+                            <div style={{ ...styles.glassPanel, padding: '80px', textAlign: 'center' }}>
+                                <div style={{ fontSize: '4rem', marginBottom: '24px', opacity: 0.5 }}>🎰</div>
+                                <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '12px' }}>No Groups Yet</h3>
+                                <p style={{ color: '#888', maxWidth: '400px', margin: '0 auto 24px' }}>
+                                    Generate groups to automatically create Discord channels and assign team roles.
+                                </p>
+                                <button onClick={handleGenerateGroups} style={styles.primaryBtn}>Generate {tournament.current_stage || 'Qualifiers'} Groups</button>
+                            </div>
+                        ) : (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '24px' }}>
+                                {groups.map(g => (
+                                    <div key={g.id} style={{ ...styles.glassPanel, padding: '24px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '16px' }}>
+                                            <h4 style={{ fontWeight: '700', fontSize: '1.25rem', color: g.name.includes('Wildcard') ? '#fbbf24' : '#fff' }}>{g.name}</h4>
+                                            <span style={{ fontSize: '0.8rem', color: '#888', background: 'rgba(0,0,0,0.3)', padding: '4px 10px', borderRadius: '6px' }}>
+                                                {g.group_teams?.length || 0} / 12
+                                            </span>
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
+                                            {g.group_teams?.map((gt, idx) => {
+                                                const isQualified = qualifications.some(q => q.team_id === gt.teams?.id);
+                                                return (
+                                                    <div key={gt.id} style={{
+                                                        padding: '12px 16px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px',
+                                                        border: isQualified ? '1px solid rgba(52, 211, 153, 0.3)' : '1px solid transparent',
+                                                        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                                        transition: 'background 0.2s',
+                                                    }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                            <span style={{ color: '#555', fontSize: '0.8rem', width: '20px' }}>{idx + 1}</span>
+                                                            <span style={{ fontWeight: '500', color: isQualified ? '#34d399' : '#ddd' }}>{gt.teams?.name || 'Unknown'}</span>
+                                                        </div>
+                                                        {isQualified && <span style={{ fontSize: '0.7rem', color: '#000', background: '#34d399', padding: '2px 8px', borderRadius: '100px', fontWeight: 'bold' }}>Q</span>}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* MATCHES TAB */}
+                {activeTab === 'matches' && (
+                    <div style={{ animation: 'fadeIn 0.4s ease', display: 'grid', gridTemplateColumns: '350px 1fr', gap: '32px', alignItems: 'start' }}>
+                        {/* Scheduler Column */}
+                        <div style={{ ...styles.glassPanel, padding: '32px' }}>
+                            <h3 style={{ marginBottom: '24px', fontWeight: '700', fontSize: '1.2rem' }}>🗓️ Schedule Match</h3>
+                            <form onSubmit={handleScheduleMatch} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <div>
-                                    <label style={labelStyle}>Select Group</label>
+                                    <label style={styles.label}>Target Group</label>
                                     <select
                                         value={selectedGroup || ''}
                                         onChange={(e) => setSelectedGroup(parseInt(e.target.value))}
-                                        style={inputStyle}
+                                        style={styles.input}
                                         required
                                     >
-                                        <option value="">Choose group...</option>
+                                        <option value="">Select a group...</option>
                                         {groups.map(g => (
-                                            <option key={g.id} value={g.id}>{g.name} ({g.group_teams?.length || 0} teams)</option>
+                                            <option key={g.id} value={g.id}>{g.name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>Match Date & Time</label>
+                                    <label style={styles.label}>Date & Time</label>
                                     <input
                                         type="datetime-local"
                                         value={matchForm.start_time}
                                         onChange={(e) => setMatchForm({ ...matchForm, start_time: e.target.value })}
-                                        style={inputStyle}
+                                        style={styles.input}
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>Room ID</label>
+                                    <label style={styles.label}>Room ID</label>
                                     <input
                                         type="text"
-                                        placeholder="e.g., ABCD1234"
+                                        placeholder="0000 0000"
                                         value={matchForm.room_id}
                                         onChange={(e) => setMatchForm({ ...matchForm, room_id: e.target.value })}
-                                        style={inputStyle}
+                                        style={styles.input}
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>Room Password</label>
+                                    <label style={styles.label}>Password</label>
                                     <input
                                         type="text"
-                                        placeholder="e.g., SecretPass"
+                                        placeholder="Secret"
                                         value={matchForm.room_password}
                                         onChange={(e) => setMatchForm({ ...matchForm, room_password: e.target.value })}
-                                        style={inputStyle}
+                                        style={styles.input}
                                         required
                                     />
                                 </div>
-                            </div>
-                            <button type="submit" style={btnStyle}>Schedule Match</button>
-                        </form>
-                    </div>
-
-                    {/* Existing Matches */}
-                    <h3 style={{ marginBottom: '20px', fontWeight: '600' }}>Scheduled Matches</h3>
-                    {matches.length === 0 ? (
-                        <div style={{ padding: '40px', textAlign: 'center', background: '#1a1a1a', borderRadius: '12px', color: '#888' }}>
-                            No matches scheduled yet.
+                                <button type="submit" style={{ ...styles.primaryBtn, width: '100%', marginTop: '8px' }}>
+                                    Publish Schedule
+                                </button>
+                                <p style={{ fontSize: '0.8rem', color: '#666', textAlign: 'center', margin: 0 }}>
+                                    Bot will notify players instantly.
+                                </p>
+                            </form>
                         </div>
-                    ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {matches.map(m => (
-                                <div key={m.id} style={{ background: '#1a1a1a', borderRadius: '12px', border: '1px solid #333', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-                                    <div>
-                                        <div style={{ fontWeight: '600', marginBottom: '4px' }}>{m.groups?.name} - Match #{m.match_number || 1}</div>
-                                        <div style={{ color: '#888', fontSize: '0.9rem' }}>
-                                            {new Date(m.start_time).toLocaleString()}
-                                        </div>
-                                        <div style={{ marginTop: '8px', fontSize: '0.85rem', color: '#666' }}>
-                                            Room: <span style={{ color: '#aaa' }}>{m.room_id}</span> | Pass: <span style={{ color: '#aaa' }}>{m.room_password}</span>
-                                        </div>
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                        <span style={{ padding: '4px 12px', background: getStatusColor(m.status) + '22', color: getStatusColor(m.status), borderRadius: '100px', fontSize: '0.8rem', fontWeight: '600', textTransform: 'capitalize' }}>
-                                            {m.status}
-                                        </span>
-                                        {m.status === 'scheduled' && (
-                                            <button onClick={() => handleUpdateMatchStatus(m.id, 'live')} style={{ padding: '8px 16px', background: '#34d399', border: 'none', borderRadius: '6px', color: '#000', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer' }}>
-                                                Start
-                                            </button>
-                                        )}
-                                        {m.status === 'live' && (
-                                            <button onClick={() => handleUpdateMatchStatus(m.id, 'completed')} style={{ padding: '8px 16px', background: '#4f46e5', border: 'none', borderRadius: '6px', color: '#fff', fontWeight: '600', fontSize: '0.85rem', cursor: 'pointer' }}>
-                                                Complete
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            )}
 
-            {/* RESULTS TAB */}
-            {activeTab === 'results' && (
-                <div>
-                    {!selectedMatch ? (
-                        <>
-                            <h3 style={{ marginBottom: '20px', fontWeight: '600' }}>Select a Match to Enter Results</h3>
-                            {matches.filter(m => m.status === 'completed' || m.status === 'live').length === 0 ? (
-                                <div style={{ padding: '40px', textAlign: 'center', background: '#1a1a1a', borderRadius: '12px', color: '#888' }}>
-                                    No matches available for results entry. Start or complete a match first.
+                        {/* List Column */}
+                        <div>
+                            <h3 style={{ marginBottom: '24px', fontWeight: '700', fontSize: '1.5rem' }}>Upcoming Matches</h3>
+                            {matches.length === 0 ? (
+                                <div style={{ padding: '60px', textAlign: 'center', border: '1px dashed #333', borderRadius: '16px' }}>
+                                    No matches scheduled.
                                 </div>
                             ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    {matches.filter(m => m.status === 'completed' || m.status === 'live').map(m => (
-                                        <div
-                                            key={m.id}
-                                            onClick={() => handleLoadResultsForm(m)}
-                                            style={{ background: '#1a1a1a', borderRadius: '12px', border: '1px solid #333', padding: '20px', cursor: 'pointer', transition: 'all 0.2s' }}
-                                            onMouseOver={(e) => e.currentTarget.style.borderColor = '#34d399'}
-                                            onMouseOut={(e) => e.currentTarget.style.borderColor = '#333'}
-                                        >
-                                            <div style={{ fontWeight: '600' }}>{m.groups?.name} - Match #{m.match_number || 1}</div>
-                                            <div style={{ color: '#888', fontSize: '0.9rem', marginTop: '4px' }}>
-                                                {new Date(m.start_time).toLocaleString()} • Click to enter results
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                    {matches.map(m => (
+                                        <div key={m.id} style={{ ...styles.glassPanel, padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                                                <div style={{ width: '60px', height: '60px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+                                                    ⚔️
+                                                </div>
+                                                <div>
+                                                    <div style={{ fontWeight: '700', fontSize: '1.1rem', marginBottom: '4px' }}>{m.groups?.name}</div>
+                                                    <div style={{ color: '#aaa', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                        <span>Match #{m.match_number || 1}</span>
+                                                        <span>•</span>
+                                                        <span>{new Date(m.start_time).toLocaleString()}</span>
+                                                    </div>
+                                                    <div style={{ marginTop: '8px', fontSize: '0.8rem', background: 'rgba(0,0,0,0.3)', padding: '4px 8px', borderRadius: '4px', display: 'inline-block', fontFamily: 'monospace', color: '#fae8b9' }}>
+                                                        ID: {m.room_id} | PW: {m.room_password}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'flex-end' }}>
+                                                <span style={{ padding: '4px 12px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', background: getStatusColor(m.status), color: '#000' }}>
+                                                    {m.status}
+                                                </span>
+                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                                    {m.status === 'scheduled' && (
+                                                        <button onClick={() => handleUpdateMatchStatus(m.id, 'live')} style={{ padding: '8px 16px', background: '#34d399', border: 'none', borderRadius: '8px', color: '#000', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer' }}>Start</button>
+                                                    )}
+                                                    {m.status === 'live' && (
+                                                        <button onClick={() => handleUpdateMatchStatus(m.id, 'completed')} style={{ padding: '8px 16px', background: '#4f46e5', border: 'none', borderRadius: '8px', color: '#fff', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer' }}>Finish</button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             )}
-                        </>
-                    ) : (
-                        <div style={{ background: '#1a1a1a', borderRadius: '16px', border: '1px solid #333', padding: '24px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                                <div>
-                                    <h3 style={{ fontWeight: '600' }}>Results Entry</h3>
-                                    <p style={{ color: '#888', fontSize: '0.9rem' }}>{selectedMatch.groups?.name} - Match #{selectedMatch.match_number || 1}</p>
-                                </div>
-                                <button onClick={() => { setSelectedMatch(null); setResultsForm([]); }} style={{ padding: '8px 16px', background: 'transparent', border: '1px solid #444', borderRadius: '6px', color: '#fff', cursor: 'pointer' }}>
-                                    ← Back
-                                </button>
-                            </div>
-
-                            <div style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead style={{ background: '#111', color: '#888', fontSize: '0.8rem', textTransform: 'uppercase' }}>
-                                        <tr>
-                                            <th style={{ padding: '12px', textAlign: 'left' }}>Team</th>
-                                            <th style={{ padding: '12px', textAlign: 'center' }}>Placement</th>
-                                            <th style={{ padding: '12px', textAlign: 'center' }}>Kills</th>
-                                            <th style={{ padding: '12px', textAlign: 'center' }}>Points</th>
-                                            <th style={{ padding: '12px', textAlign: 'center' }}>Qualify?</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {resultsForm.map((team, idx) => (
-                                            <tr key={team.team_id} style={{ borderBottom: '1px solid #222' }}>
-                                                <td style={{ padding: '12px', color: '#fff', fontWeight: '500' }}>{team.team_name}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                    <input
-                                                        type="number"
-                                                        min="1"
-                                                        value={team.placement}
-                                                        onChange={(e) => {
-                                                            const newForm = [...resultsForm];
-                                                            newForm[idx].placement = parseInt(e.target.value) || '';
-                                                            setResultsForm(newForm);
-                                                        }}
-                                                        style={{ ...inputStyle, width: '60px', textAlign: 'center' }}
-                                                    />
-                                                </td>
-                                                <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                    <input
-                                                        type="number"
-                                                        min="0"
-                                                        value={team.kills}
-                                                        onChange={(e) => {
-                                                            const newForm = [...resultsForm];
-                                                            newForm[idx].kills = parseInt(e.target.value) || 0;
-                                                            setResultsForm(newForm);
-                                                        }}
-                                                        style={{ ...inputStyle, width: '60px', textAlign: 'center' }}
-                                                    />
-                                                </td>
-                                                <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                    <input
-                                                        type="number"
-                                                        min="0"
-                                                        value={team.points}
-                                                        onChange={(e) => {
-                                                            const newForm = [...resultsForm];
-                                                            newForm[idx].points = parseInt(e.target.value) || 0;
-                                                            setResultsForm(newForm);
-                                                        }}
-                                                        style={{ ...inputStyle, width: '60px', textAlign: 'center' }}
-                                                    />
-                                                </td>
-                                                <td style={{ padding: '12px', textAlign: 'center' }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={team.qualify}
-                                                        onChange={(e) => {
-                                                            const newForm = [...resultsForm];
-                                                            newForm[idx].qualify = e.target.checked;
-                                                            setResultsForm(newForm);
-                                                        }}
-                                                        style={{ width: '20px', height: '20px', cursor: 'pointer' }}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                                <button onClick={handleSaveResults} style={{ ...btnStyle, background: '#34d399' }}>
-                                    Save Results
-                                </button>
-                                <button onClick={handleQualifyTeams} style={{ ...btnStyle, background: '#4f46e5', color: '#fff' }}>
-                                    Qualify Selected Teams →
-                                </button>
-                            </div>
                         </div>
-                    )}
-                </div>
-            )}
-
-            {/* TEAMS TAB */}
-            {activeTab === 'teams' && (
-                <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                        <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#fff' }}>Registered Teams</h3>
-                        <span style={{ padding: '6px 14px', background: '#222', borderRadius: '100px', fontSize: '0.9rem', color: registrations.length >= tournament.max_teams ? '#ef4444' : '#888' }}>
-                            {registrations.length} / {tournament.max_teams} Registered
-                        </span>
                     </div>
+                )}
 
-                    <div style={{ background: '#1a1a1a', borderRadius: '16px', border: '1px solid #333', overflow: 'hidden' }}>
-                        {registrations.length === 0 ? (
-                            <div style={{ padding: '60px', textAlign: 'center', color: '#666' }}>
-                                <div style={{ fontSize: '2rem', marginBottom: '16px', opacity: 0.3 }}>📋</div>
-                                No teams have registered for this tournament yet.
+                {/* RESULTS TAB */}
+                {activeTab === 'results' && (
+                    <div style={{ animation: 'fadeIn 0.4s ease' }}>
+                        {!selectedMatch ? (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+                                {matches.filter(m => m.status === 'completed' || m.status === 'live').length === 0 ? (
+                                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', opacity: 0.5 }}>
+                                        Start or complete matches to enter results.
+                                    </div>
+                                ) : (
+                                    matches.filter(m => m.status === 'completed' || m.status === 'live').map(m => (
+                                        <div key={m.id} onClick={() => handleLoadResultsForm(m)} style={{ ...styles.glassPanel, padding: '24px', cursor: 'pointer', transition: 'transform 0.2s', border: '1px solid rgba(52, 211, 153, 0.2)' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-4px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+                                                <span style={{ fontSize: '2rem' }}>📊</span>
+                                                <span style={{ padding: '4px 12px', background: '#34d399', color: '#000', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 'bold', height: 'fit-content' }}>READY</span>
+                                            </div>
+                                            <h4 style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{m.groups?.name}</h4>
+                                            <p style={{ color: '#aaa', marginTop: '4px', fontSize: '0.9rem' }}>Match #{m.match_number}</p>
+                                            <div style={{ marginTop: '20px', fontSize: '0.85rem', color: '#34d399', fontWeight: '600' }}>Enter Results →</div>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         ) : (
-                            <div style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
-                                    <thead style={{ background: '#111', color: '#666', fontSize: '0.8rem', textAlign: 'left', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                        <tr>
-                                            <th style={{ padding: '20px 24px', fontWeight: '600' }}>Team Name</th>
-                                            <th style={{ padding: '20px 24px', fontWeight: '600' }}>Join Code</th>
-                                            <th style={{ padding: '20px 24px', fontWeight: '600' }}>Registered At</th>
-                                            <th style={{ padding: '20px 24px', fontWeight: '600' }}>Status</th>
-                                            <th style={{ padding: '20px 24px', fontWeight: '600' }}>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {registrations.map(r => {
-                                            const isQualified = qualifications.some(q => q.team_id === r.team_id);
-                                            return (
-                                                <tr key={r.id} style={{ borderBottom: '1px solid #222' }}>
-                                                    <td style={{ padding: '20px 24px', fontWeight: '600', color: '#fff' }}>
-                                                        {r.teams?.name || 'Unknown Team'}
+                            <div style={{ ...styles.glassPanel, padding: '40px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
+                                    <div>
+                                        <div style={{ fontSize: '0.9rem', color: '#aaa', textTransform: 'uppercase', letterSpacing: '1px' }}>Result Entry</div>
+                                        <h2 style={{ fontSize: '2rem', fontWeight: 'bold' }}>{selectedMatch.groups?.name} <span style={{ color: '#666' }}>Match #{selectedMatch.match_number}</span></h2>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                        <button onClick={() => { setSelectedMatch(null); setResultsForm([]); }} style={styles.secondaryBtn}>Cancel</button>
+                                        <button onClick={handleSaveResults} style={styles.primaryBtn}>Save & Post Leaderboard</button>
+                                    </div>
+                                </div>
+
+                                <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '16px', overflow: 'hidden' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <thead style={{ background: 'rgba(0,0,0,0.5)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                            <tr style={{ color: '#bbb', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.5px' }}>
+                                                <th style={{ padding: '16px', textAlign: 'left' }}>Team Name</th>
+                                                <th style={{ padding: '16px', textAlign: 'center', width: '120px' }}>Rank #</th>
+                                                <th style={{ padding: '16px', textAlign: 'center', width: '120px' }}>Kills</th>
+                                                <th style={{ padding: '16px', textAlign: 'center', width: '120px' }}>Total Pts</th>
+                                                <th style={{ padding: '16px', textAlign: 'center', width: '100px' }}>Qualify</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {resultsForm.map((team, idx) => (
+                                                <tr key={team.team_id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                                    <td style={{ padding: '16px', fontWeight: '600' }}>{team.team_name}</td>
+                                                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                                                        <input
+                                                            type="number"
+                                                            value={team.placement}
+                                                            onChange={(e) => {
+                                                                const newForm = [...resultsForm];
+                                                                newForm[idx].placement = parseInt(e.target.value) || '';
+                                                                setResultsForm(newForm);
+                                                            }}
+                                                            style={{ ...styles.input, textAlign: 'center', padding: '8px' }}
+                                                            placeholder="-"
+                                                        />
                                                     </td>
-                                                    <td style={{ padding: '20px 24px', color: '#aaa', fontFamily: 'monospace' }}>
-                                                        {r.teams?.join_code || '-'}
+                                                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                                                        <input
+                                                            type="number"
+                                                            value={team.kills}
+                                                            onChange={(e) => {
+                                                                const newForm = [...resultsForm];
+                                                                newForm[idx].kills = parseInt(e.target.value) || 0;
+                                                                setResultsForm(newForm);
+                                                            }}
+                                                            style={{ ...styles.input, textAlign: 'center', padding: '8px' }}
+                                                        />
                                                     </td>
-                                                    <td style={{ padding: '20px 24px', color: '#888' }}>
-                                                        {new Date(r.registered_at).toLocaleDateString()} <span style={{ fontSize: '0.8em', opacity: 0.6 }}>{new Date(r.registered_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                                                        <input
+                                                            type="number"
+                                                            value={team.points}
+                                                            onChange={(e) => {
+                                                                const newForm = [...resultsForm];
+                                                                newForm[idx].points = parseInt(e.target.value) || 0;
+                                                                setResultsForm(newForm);
+                                                            }}
+                                                            style={{ ...styles.input, textAlign: 'center', padding: '8px', color: '#fbbf24', fontWeight: 'bold' }}
+                                                        />
                                                     </td>
-                                                    <td style={{ padding: '20px 24px' }}>
-                                                        <span style={{ padding: '4px 10px', background: isQualified ? 'rgba(79, 70, 229, 0.1)' : 'rgba(52, 211, 153, 0.1)', color: isQualified ? '#818cf8' : '#34d399', borderRadius: '100px', fontSize: '0.8rem', fontWeight: '500' }}>
-                                                            {isQualified ? 'Qualified' : 'Active'}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{ padding: '20px 24px' }}>
-                                                        <button onClick={() => handleDisqualify(r.id, r.teams?.name)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500', fontSize: '0.9rem' }}>Disqualify</button>
+                                                    <td style={{ padding: '12px', textAlign: 'center' }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={team.qualify}
+                                                            onChange={(e) => {
+                                                                const newForm = [...resultsForm];
+                                                                newForm[idx].qualify = e.target.checked;
+                                                                setResultsForm(newForm);
+                                                            }}
+                                                            style={{ width: '24px', height: '24px', accentColor: '#4f46e5', cursor: 'pointer' }}
+                                                        />
                                                     </td>
                                                 </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style={{ marginTop: '20px', textAlign: 'right' }}>
+                                    <button onClick={handleQualifyTeams} style={{ ...styles.primaryBtn, background: '#4f46e5', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.4)' }}>
+                                        Confirm Qualification →
+                                    </button>
+                                </div>
                             </div>
                         )}
                     </div>
-                </div>
-            )}
+                )}
+
+                {/* TEAMS TAB */}
+                {activeTab === 'teams' && (
+                    <div style={{ ...styles.glassPanel, padding: '0', overflow: 'hidden', animation: 'fadeIn 0.4s ease' }}>
+                        <div style={{ padding: '24px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Registry</h3>
+                            <span style={{ fontSize: '0.9rem', color: '#888' }}>{registrations.length} Teams</span>
+                        </div>
+                        {registrations.length === 0 ? (
+                            <div style={{ padding: '60px', textAlign: 'center', color: '#666' }}>Empty Registry</div>
+                        ) : (
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead style={{ background: 'rgba(0,0,0,0.2)' }}>
+                                    <tr style={{ textAlign: 'left', color: '#888', textTransform: 'uppercase', fontSize: '0.8rem' }}>
+                                        <th style={{ padding: '20px 24px' }}>Team</th>
+                                        <th style={{ padding: '20px 24px' }}>Code</th>
+                                        <th style={{ padding: '20px 24px' }}>Date</th>
+                                        <th style={{ padding: '20px 24px' }}>Status</th>
+                                        <th style={{ padding: '20px 24px', textAlign: 'right' }}>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {registrations.map(r => {
+                                        const isQualified = qualifications.some(q => q.team_id === r.team_id);
+                                        return (
+                                            <tr key={r.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }}>
+                                                <td style={{ padding: '20px 24px', fontWeight: '600' }}>{r.teams?.name}</td>
+                                                <td style={{ padding: '20px 24px', fontFamily: 'monospace', color: '#aaa' }}>{r.teams?.join_code}</td>
+                                                <td style={{ padding: '20px 24px', color: '#888' }}>{new Date(r.registered_at).toLocaleDateString()}</td>
+                                                <td style={{ padding: '20px 24px' }}>
+                                                    <span style={{ padding: '6px 12px', borderRadius: '100px', fontSize: '0.75rem', fontWeight: 'bold', background: isQualified ? 'rgba(79, 70, 229, 0.2)' : 'rgba(52, 211, 153, 0.1)', color: isQualified ? '#818cf8' : '#34d399' }}>
+                                                        {isQualified ? 'QUALIFIED' : 'ACTIVE'}
+                                                    </span>
+                                                </td>
+                                                <td style={{ padding: '20px 24px', textAlign: 'right' }}>
+                                                    <button onClick={() => handleDisqualify(r.id, r.teams?.name)} style={{ color: '#ef4444', background: 'none', border: 'none', fontWeight: '600', cursor: 'pointer', fontSize: '0.85rem', opacity: 0.8 }}>
+                                                        Disqualify
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <style jsx global>{`
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
         </div>
     );
 }
-
-const labelStyle = { display: 'block', fontSize: '0.85rem', color: '#aaa', marginBottom: '8px', fontWeight: '500' };
-const inputStyle = { width: '100%', padding: '12px', background: '#0a0a0a', border: '1px solid #333', borderRadius: '8px', color: '#fff', fontSize: '0.95rem' };
-const btnStyle = { padding: '12px 24px', background: '#34d399', border: 'none', borderRadius: '8px', color: '#000', fontWeight: 'bold', cursor: 'pointer', fontSize: '1rem' };
