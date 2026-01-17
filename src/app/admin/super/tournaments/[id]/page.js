@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase-auth';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { generateGroupChannels } from '@/app/actions';
+// import { generateGroupChannels } from '@/app/actions';
 
 export default function TournamentDetails() {
     const { id } = useParams();
@@ -134,21 +134,8 @@ export default function TournamentDetails() {
             }
 
             // Discord Automation
-            if (tournament.discord_category_id) {
-                setActionMessage(`Groups created! Generating Discord Channels...`);
-                const discordResult = await generateGroupChannels(tournament.discord_category_id, createdGroups);
-
-                if (discordResult.success) {
-                    for (const res of discordResult.results) {
-                        await supabase.from('groups').update({ discord_channel_id: res.channelId }).eq('id', res.groupId);
-                    }
-                    setActionMessage(`Successfully created ${chunks.length} groups & Discord channels!`);
-                } else {
-                    setActionMessage(`Groups created, but Discord failed: ${discordResult.error}`);
-                }
-            } else {
-                setActionMessage(`Successfully created ${chunks.length} groups! (No Discord Category linked)`);
-            }
+            // if (tournament.discord_category_id) { ... } // Replaced by Bot
+            setActionMessage(`Successfully created ${chunks.length} groups! (Discord Bot will handle channels)`);
 
             fetchData(); // Refresh
         } catch (err) {
