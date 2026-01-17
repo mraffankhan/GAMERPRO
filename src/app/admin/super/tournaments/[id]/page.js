@@ -406,6 +406,19 @@ export default function TournamentDetails() {
         label: { display: 'block', fontSize: '0.9rem', color: '#aaa', marginBottom: '8px', fontWeight: '500' }
     };
 
+    if (loading) {
+        return (
+            <div style={{
+                height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: '#000', color: '#34d399', fontSize: '1.5rem', fontWeight: 'bold'
+            }}>
+                Loading Tournament...
+            </div>
+        );
+    }
+
+    if (!tournament) return <div style={{ color: '#fff', padding: '40px' }}>Tournament not found.</div>;
+
     return (
         <div style={styles.container}>
             {/* Confirm Modal */}
