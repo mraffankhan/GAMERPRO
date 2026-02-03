@@ -1,53 +1,60 @@
+import styles from './Hero.module.css';
 import Link from 'next/link';
 
 export default function Hero() {
     return (
-        <section className="relative w-full h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden bg-[url('/hero-bg.jpg')] bg-cover bg-center">
-            {/* Overlays */}
-            <div className="absolute inset-0 bg-black/70" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/50 via-transparent to-[#050505]" />
+        <section className={styles.hero}>
+            <div className={styles.background}>
+                <div
+                    className={styles.blob1}
+                ></div>
+                <div
+                    className={styles.blob2}
+                ></div>
+            </div>
 
-            {/* Content */}
-            <div className="relative z-10 container text-center flex flex-col items-center">
-                <div className="mb-4 py-1 px-3 rounded-full border border-neon-blue/30 bg-neon-blue/10 backdrop-blur-sm">
-                    <span className="text-neon-blue text-sm font-bold tracking-wider uppercase">Welcome to the Arena</span>
-                </div>
-
-                <h1 className="text-5xl md:text-8xl font-black mb-6 tracking-tighter text-white drop-shadow-lg">
-                    RISE TO <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-glow">
-                        GLORY
-                    </span>
+            <div className={`container ${styles.container}`}>
+                <h1
+                    className={styles.headline}
+                >
+                    DOMINATE <br />
+                    <span className={styles.highlight}>THE ARENA</span>
                 </h1>
 
-                <p className="text-lg md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                    The premium esports platform for competitive gamers.
-                    Compete in daily tournaments, build your legacy, and win real prizes.
+                <p
+                    className={styles.subtext}
+                >
+                    The elite platform for high-stakes esports.
+                    Create, compete, and conquer in tournaments designed for the pros.
+                    Experience the next evolution of competitive gaming.
                 </p>
 
-                <div className="flex flex-col md:flex-row gap-6 w-full justify-center">
-                    <Link href="/tournaments" className="btn btn-primary text-lg px-10 py-4 clip-diagonal group">
-                        <span>Join Tournament</span>
+                <div
+                    className={styles.actions}
+                >
+                    <Link href="/tournaments" className={styles.glassBtnPrimary}>
+                        Start Competing
                     </Link>
-                    <Link href="/teams/create" className="btn btn-secondary text-lg px-10 py-4 clip-diagonal group">
-                        <span>Create Team</span>
-                    </Link>
+                    <button className={styles.glassBtnSecondary}>
+                        Coming Soon
+                    </button>
                 </div>
 
-                {/* Stats / Social Proof */}
-                <div className="mt-16 flex gap-8 md:gap-16 text-center border-t border-white/10 pt-8">
-                    <div>
-                        <div className="text-3xl font-bold text-white">500+</div>
-                        <div className="text-sm text-gray-400 uppercase tracking-widest">Tournaments</div>
-                    </div>
-                    <div>
-                        <div className="text-3xl font-bold text-white">$10k+</div>
-                        <div className="text-sm text-gray-400 uppercase tracking-widest">Prize Pool</div>
-                    </div>
-                    <div>
-                        <div className="text-3xl font-bold text-white">10k+</div>
-                        <div className="text-sm text-gray-400 uppercase tracking-widest">Gamers</div>
+                {/* Partners Ticker */}
+                <div
+                    className={styles.partnersSection}
+                >
+                    <p className={styles.partnersLabel}>PARTNERED WITH</p>
+                    <div className={styles.tickerContainer}>
+                        <div className={styles.tickerTrack}>
+                            {/* Duplicate logos for infinite scroll effect */}
+                            {[1, 2, 3, 4, 5, 6].map((i) => (
+                                <div key={i} className={styles.partnerLogos}>
+                                    <img src="/Untitled8.png" alt="DU ESPORTS" className={styles.partnerLogo} />
+                                    <img src="/Screenshot%202026-01-13%20140653.png" alt="REX ESPORTS" className={styles.partnerLogo} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
