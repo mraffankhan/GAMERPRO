@@ -40,7 +40,7 @@ export default function Social() {
                                 alignItems: 'center',
                                 gap: '8px'
                             }}>
-                            Follow Custom
+                            Follow Instagram
                         </a>
                     </div>
                 </div>
