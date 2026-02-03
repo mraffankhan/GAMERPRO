@@ -10,20 +10,20 @@ export default function Hero() {
 
             {/* Content */}
             <div className="relative z-10 container text-center flex flex-col items-center">
-                <div className="mb-4 py-1 px-3 rounded-full border border-neon-blue/30 bg-neon-blue/10 backdrop-blur-sm">
-                    <span className="text-neon-blue text-sm font-bold tracking-wider uppercase">Welcome to the Arena</span>
+                <div className="mb-4 py-1 px-3 rounded-full border border-neon-gold/30 bg-neon-gold/10 backdrop-blur-sm">
+                    <span className="text-neon-gold text-sm font-bold tracking-wider uppercase">Private Internal Beta</span>
                 </div>
 
                 <h1 className="text-5xl md:text-8xl font-black mb-6 tracking-tighter text-white drop-shadow-lg">
-                    RISE TO <br />
+                    GAMERPRO <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-glow">
-                        GLORY
+                        INTERNAL
                     </span>
                 </h1>
 
                 <p className="text-lg md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                    The premium esports platform for competitive gamers.
-                    Compete in daily tournaments, build your legacy, and win real prizes.
+                    Exclusive access for organization testing and validation.
+                    Scalable competitive infrastructure for the future of esports.
                 </p>
 
                 <div className="flex flex-col md:flex-row gap-6 w-full justify-center">
