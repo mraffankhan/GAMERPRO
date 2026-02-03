@@ -40,8 +40,8 @@ export default function Footer() {
                             <h4 id="footer-social">Social</h4>
                             <nav aria-labelledby="footer-social">
                                 <a href="https://twitter.com/gamerpro" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Twitter">Twitter</a>
-                                <a href="https://discord.gg/gamerpro" target="_blank" rel="noopener noreferrer" aria-label="Join our Discord">Discord</a>
-                                <a href="https://instagram.com/gamerpro" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">Instagram</a>
+                                <a href="https://discord.gg/ZT4KXFK3RD" target="_blank" rel="noopener noreferrer" aria-label="Join our Discord">Discord</a>
+                                <a href="https://instagram.com/gamerpro.ind" target="_blank" rel="noopener noreferrer" aria-label="Follow us on Instagram">Instagram</a>
                             </nav>
                         </div>
                     </div>
